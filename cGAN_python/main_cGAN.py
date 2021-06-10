@@ -147,9 +147,9 @@ def train(epochs):
         nm.append(nmse_dB)
 
         
-        if (epoch == (epochs - 1)):
-            nmse_epoch = TemporaryFile()
-            np.save(nmse_epoch, nm)
+        # if (epoch == (epochs - 1)):
+        #     nmse_epoch = TemporaryFile()
+        #     np.save(nmse_epoch, nm)
         
         # Save the predicted Channel 
         # matfiledata = {} # make a dictionary to store the MAT data in
