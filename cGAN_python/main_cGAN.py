@@ -173,13 +173,18 @@ def train(epochs, l2_weight=100):
 if (__name__ == "__main__"):
 
     # data path
-    path = "../Data_Generation_matlab/Gan_Data/Gan_10_dB_3_path_Indoor2p4_64ant_32users_8pilot_r1.mat"
+    path = "../Data_Generation_matlab/Gan_Data/Gan_10_dB_3_path_Indoor2p5_64ant_32users_8pilot_r1.mat"
 
     # Set hyper params...
     beta_1_list = [0.5, 0.6, 0.7, 0.8, 0.9]
     l2_weight_list = [0.0, 1.0, 10.0, 50.0, 100.0]
     lr_gen_list = [1e-3, 5e-4, 2e-4, 1e-4, 5e-5, 1e-5]
     lr_dis_list = [1e-3, 5e-4, 2e-4, 1e-4, 5e-5, 1e-5]
+
+    beta_1_list = [0.5]
+    l2_weight_list = [100.0]
+    lr_gen_list = [2e-4]
+    lr_dis_list = [2e-5]
 
     # batch = 1 produces good results on U-NET
     BATCH_SIZE = 1
