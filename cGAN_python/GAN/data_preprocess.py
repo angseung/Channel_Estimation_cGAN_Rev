@@ -20,7 +20,6 @@ def load_image_train(path, batch_size = 1):
     with h5py.File(path, 'r') as file:
         real_image = np.transpose(np.array(file['output_da']))
 
-        
     with h5py.File(path, 'r') as file:
         input_image = np.transpose(np.array(file['input_da']))
         
@@ -42,8 +41,6 @@ def load_image_train(path, batch_size = 1):
         
     
         yield imgs_A, imgs_B
-        
-
 
 
 def load_image_test(path, batch_size = 1):
@@ -57,7 +54,6 @@ def load_image_test(path, batch_size = 1):
         
     SIZE_IN= real_image.shape
 
-    
     n_batches = int(SIZE_IN[0] / batch_size)
     
     for i in range(n_batches-1):
@@ -76,6 +72,5 @@ def load_image_test_y(path):
     with h5py.File(path, 'r') as file:
         input_image = np.transpose(np.array(file['input_da_test']))
         
-        
-    
+
     return real_image, input_image

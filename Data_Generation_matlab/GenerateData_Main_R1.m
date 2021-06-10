@@ -2,7 +2,7 @@ clear;
 close all;
 clc
 
-%% Settings 
+%% Settings
 bs_ant= 64; % M= 64 BS Antennas
 users = 32; % K= 32 Users
 pilot_l = 8; % Pilots length is 8

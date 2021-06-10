@@ -83,7 +83,6 @@ def generated_image(model, test_input, tar, t=0):
     prediction = model(test_input)
     #plt.figure(figsize=(15, 15))
     display_list = [np.squeeze(test_input[:,:,:,0]), np.squeeze(tar[:,:,:,0]), np.squeeze(prediction[:,:,:,0])]
-    
 
     title = ['Input Y', 'Target H', 'Prediction H']
     
@@ -92,6 +91,7 @@ def generated_image(model, test_input, tar, t=0):
         plt.title(title[i])
         plt.imshow(display_list[i]) 
         plt.axis("off")
+
     plt.savefig(os.path.join("generated_img", "img_"+str(t)+".png"))
 
 
@@ -114,7 +114,7 @@ def train_step(input_image, target, l2_weight=100):
     generator_optimizer.apply_gradients(zip(generator_gradient, generator.trainable_variables))
     discriminator_optimizer.apply_gradients(zip(discriminator_gradient, discriminator.trainable_variables))
 
-    return gen_loss, disc_loss
+    return (gen_loss, disc_loss)
 
 
 def train(epochs, l2_weight=100):
@@ -125,7 +125,7 @@ def train(epochs, l2_weight=100):
     for epoch in range(epochs):
         print("-----\nEPOCH:", epoch)
         # train
-        for bi, (target, input_image) in enumerate(load_image_train(path)):
+        for (bi, (target, input_image)) in enumerate(load_image_train(path)):
             elapsed_time = datetime.datetime.now() - start_time
             (gen_loss, disc_loss) = train_step(input_image, target, l2_weight=l2_weight)
             print("B/E:", bi, '/' , epoch, ", Generator loss:", gen_loss.numpy(), ", Discriminator loss:", disc_loss.numpy(), ', time:',  elapsed_time)
@@ -206,7 +206,7 @@ if (__name__ == "__main__"):
                     generator_optimizer = tf.keras.optimizers.Adam(learning_rate=lr_gen, beta_1=beta_1)
 
                     # train
-                    (nm, ep) = train(epochs=10, l2_weight=l2_weight)
+                    (nm, ep) = train(epochs=25, l2_weight=l2_weight)
 
                     fig_nmse = plt.figure(figsize=(10, 10))
                     plt.plot(ep, nm, '^-r')
