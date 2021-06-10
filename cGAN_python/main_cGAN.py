@@ -1,6 +1,7 @@
 import os
-from sys import platform
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+from sys import platform
+import datetime
 import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
@@ -201,12 +202,27 @@ if (__name__ == "__main__"):
                     # train
                     (nm, ep) = train(epochs=10, l2_weight=l2_weight)
 
-                    plt.figure(figsize=(10, 10))
+                    fig_nmse = plt.figure(figsize=(10, 10))
                     plt.plot(ep, nm, '^-r')
+
+                    for x, y in zip(ep, nm):
+                        if (x > 9):
+                            plt.text(x, y + 0.5, "%.3f" % y,  # 좌표 (x축 = v, y축 = y[0]..y[1], 표시 = y[0]..y[1])
+                                     fontsize=9,
+                                     color='black',
+                                     horizontalalignment='center',  # horizontalalignment (left, center, right)
+                                     verticalalignment='bottom',
+                                     rotation=90)  # verticalalignment (top, center, bottom)
+
                     plt.xlabel('Epoch')
                     plt.ylabel('NMSE(dB)')
+                    plt.title("[lr_gen : %.6f][lr_dis : %.6f][beta1 : %.3f][l2_weight : %.6f]"
+                              % (lr_gen, lr_dis, beta_1, l2_weight))
                     plt.grid(True)
 
                     if (is_not_linux):
                         plt.show()
+
+                    timestr = time.strftime("%Y%m%d_%H%M%S")
+                    fig_nmse.savefig("fig_temp/nmse_score_%s_2epoch" % (timestr))
 
