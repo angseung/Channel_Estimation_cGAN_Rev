@@ -39,7 +39,7 @@ This allows the generated image to become structurally similar to the target ima
 The formula to calculate the total generator loss = gan_loss + LAMBDA * l2_loss, where LAMBDA = 100. 
 This value was decided by the authors of the paper.
 """
-is_not_linux = (platform is not 'linux')
+is_not_linux = (platform != 'linux')
 
 def discriminator_loss(disc_real_output, disc_generated_output):
     """disc_real_output = [real_target]

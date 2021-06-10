@@ -133,7 +133,7 @@ cGAN_python/nmse_score_old
 /cGAN_python/Results/
 /cGAN_python/beta0.5/
 /cGAN_python/beta0.9/
-/cGAN_python/fig_temp/
+/cGAN_python/fig_temp/*.jpg
 /cGAN_python/GAN/__pycache__/
 /Data_Generation_matlab/RayTracing Scenarios
 *.asv
