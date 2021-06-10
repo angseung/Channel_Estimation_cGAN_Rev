@@ -2,6 +2,7 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 from sys import platform
 import datetime
+import time
 import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
@@ -126,7 +127,7 @@ def train(epochs, l2_weight=100):
         # train
         for bi, (target, input_image) in enumerate(load_image_train(path)):
             elapsed_time = datetime.datetime.now() - start_time
-            gen_loss, disc_loss = train_step(input_image, target, l2_weight=l2_weight)
+            (gen_loss, disc_loss) = train_step(input_image, target, l2_weight=l2_weight)
             print("B/E:", bi, '/' , epoch, ", Generator loss:", gen_loss.numpy(), ", Discriminator loss:", disc_loss.numpy(), ', time:',  elapsed_time)
         # generated and see the progress
         # for bii, (tar, inp) in enumerate(load_image_test(path)):
