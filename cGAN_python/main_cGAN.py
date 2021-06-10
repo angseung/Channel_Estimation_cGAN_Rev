@@ -1,4 +1,5 @@
 import os
+from sys import platform
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import tensorflow as tf
 import numpy as np
@@ -36,7 +37,7 @@ This allows the generated image to become structurally similar to the target ima
 The formula to calculate the total generator loss = gan_loss + LAMBDA * l2_loss, where LAMBDA = 100. 
 This value was decided by the authors of the paper.
 """
-
+is_not_linux = (platform is not 'linux')
 
 def discriminator_loss(disc_real_output, disc_generated_output):
     """disc_real_output = [real_target]
@@ -92,7 +93,7 @@ def generated_image(model, test_input, tar, t=0):
     plt.savefig(os.path.join("generated_img", "img_"+str(t)+".png"))
 
 
-def train_step(input_image, target):
+def train_step(input_image, target, l2_weight=100):
     with tf.GradientTape() as gen_tape, tf.GradientTape() as disc_tape:
         gen_output = generator(input_image)                      # input -> generated_target
         disc_real_output = discriminator(target)  # [input, target] -> disc output
@@ -100,7 +101,7 @@ def train_step(input_image, target):
         # print("*", gen_output.shape, disc_real_output.shape, disc_generated_output.shape)
 
         # calculate loss
-        gen_loss = generator_loss(disc_generated_output, gen_output, target)   # gen loss
+        gen_loss = generator_loss(disc_generated_output, gen_output, target, l2_weight=l2_weight)   # gen loss
         disc_loss = discriminator_loss(disc_real_output, disc_generated_output)  # disc loss
 
     # gradient
@@ -114,7 +115,7 @@ def train_step(input_image, target):
     return gen_loss, disc_loss
 
 
-def train(epochs):
+def train(epochs, l2_weight=100):
     nm = []
     ep = []
     start_time = datetime.datetime.now()
@@ -124,7 +125,7 @@ def train(epochs):
         # train
         for bi, (target, input_image) in enumerate(load_image_train(path)):
             elapsed_time = datetime.datetime.now() - start_time
-            gen_loss, disc_loss = train_step(input_image, target)
+            gen_loss, disc_loss = train_step(input_image, target, l2_weight=l2_weight)
             print("B/E:", bi, '/' , epoch, ", Generator loss:", gen_loss.numpy(), ", Discriminator loss:", disc_loss.numpy(), ', time:',  elapsed_time)
         # generated and see the progress
         # for bii, (tar, inp) in enumerate(load_image_test(path)):
@@ -161,7 +162,9 @@ def train(epochs):
         plt.grid(True)
         plt.xlabel('Epoch')
         plt.ylabel('NMSE')
-        plt.show()
+
+        if (is_not_linux):
+            plt.show()
     
     return nm, ep
 
@@ -170,27 +173,40 @@ if (__name__ == "__main__"):
     # data path
     path = "../Data_Generation_matlab/Gan_Data/Gan_10_dB_3_path_Indoor2p4_64ant_32users_8pilot_r1.mat"
 
+    # Set hyper params...
+    beta_1_list = [0.5, 0.6, 0.7, 0.8, 0.9]
+    l2_weight_list = [0.0, 1.0, 10.0, 50.0, 100.0]
+    lr_gen_list = [1e-3, 5e-4, 2e-4, 1e-4, 5e-5, 1e-5]
+    lr_dis_list = [1e-3, 5e-4, 2e-4, 1e-4, 5e-5, 1e-5]
+
     # batch = 1 produces good results on U-NET
     BATCH_SIZE = 1
 
-    # model
-    generator = Generator()
-    discriminator = Discriminator()
+    for beta_1 in beta_1_list:
+        for l2_weight in l2_weight_list:
+            for lr_gen in lr_gen_list:
+                for lr_dis in lr_dis_list:
 
-    # optimizer
-    # generator_optimizer = tf.compat.v1.train.AdamOptimizer(2e-4, beta1=0.5) ##
-    # discriminator_optimizer = tf.compat.v1.train.RMSPropOptimizer(2e-5) ##
-    #discriminator_optimizer = tf.compat.v1.train.AdamOptimizer(2e-4, beta1=0.5) # Which is unused...
-    discriminator_optimizer = tf.keras.optimizers.Adam(learning_rate=2e-5, beta_1 = 0.5)
-    generator_optimizer = tf.keras.optimizers.Adam(learning_rate=2e-4, beta_1 = 0.5)
+                    # model
+                    generator = Generator()
+                    discriminator = Discriminator()
 
-    # train
-    nm, ep = train(epochs=10)
-    
-    plt.figure()
-    plt.plot(ep,nm,'^-r')
-    plt.xlabel('Epoch')
-    plt.ylabel('NMSE')
-    plt.grid(True)
-    plt.show()
+                    # optimizer
+                    # generator_optimizer = tf.compat.v1.train.AdamOptimizer(2e-4, beta1=0.5) ##
+                    # discriminator_optimizer = tf.compat.v1.train.RMSPropOptimizer(2e-5) ##
+                    #discriminator_optimizer = tf.compat.v1.train.AdamOptimizer(2e-4, beta1=0.5) # Which is unused...
+                    discriminator_optimizer = tf.keras.optimizers.Adam(learning_rate=lr_dis, beta_1=beta_1)
+                    generator_optimizer = tf.keras.optimizers.Adam(learning_rate=lr_gen, beta_1=beta_1)
+
+                    # train
+                    (nm, ep) = train(epochs=10, l2_weight=l2_weight)
+
+                    plt.figure(figsize=(10, 10))
+                    plt.plot(ep, nm, '^-r')
+                    plt.xlabel('Epoch')
+                    plt.ylabel('NMSE(dB)')
+                    plt.grid(True)
+
+                    if (is_not_linux):
+                        plt.show()
 
