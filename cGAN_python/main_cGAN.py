@@ -51,8 +51,10 @@ def discriminator_loss(disc_real_output, disc_generated_output):
     # generated_loss = tf.nn.sigmoid_cross_entropy_with_logits(
     #         labels=tf.zeros_like(disc_generated_output), logits=disc_generated_output)  # label=0
 
-    real_loss = cross_entropy(tf.ones_like(disc_real_output), disc_real_output)
-    generated_loss = cross_entropy(tf.zeros_like(disc_generated_output), disc_generated_output)
+    real_loss = cross_entropy(tf.ones_like(disc_real_output),
+                              disc_real_output)
+    generated_loss = cross_entropy(tf.zeros_like(disc_generated_output),
+                                   disc_generated_output)
 
     total_disc_loss = tf.reduce_mean(real_loss) + tf.reduce_mean(generated_loss)
 
@@ -69,11 +71,12 @@ def generator_loss(disc_generated_output, gen_output, target, l2_weight=100):
     # GAN loss
     # gen_loss = tf.nn.sigmoid_cross_entropy_with_logits(
     #         labels=tf.ones_like(disc_generated_output), logits=disc_generated_output)
-    gen_loss = cross_entropy(tf.ones_like(disc_generated_output), disc_generated_output)
+    gen_loss = cross_entropy(tf.ones_like(disc_generated_output),
+                             disc_generated_output)
 
     # L2 loss
     l2_loss = tf.reduce_mean(tf.abs(target - gen_output))
-    total_gen_loss = tf.reduce_mean(gen_loss) + l2_weight * l2_loss
+    total_gen_loss = tf.reduce_mean(gen_loss) + (l2_weight * l2_loss)
 
     return total_gen_loss
 
@@ -103,16 +106,24 @@ def train_step(input_image, target, l2_weight=100):
         # print("*", gen_output.shape, disc_real_output.shape, disc_generated_output.shape)
 
         # calculate loss
-        gen_loss = generator_loss(disc_generated_output, gen_output, target, l2_weight=l2_weight)   # gen loss
-        disc_loss = discriminator_loss(disc_real_output, disc_generated_output)  # disc loss
+        gen_loss = generator_loss(disc_generated_output,
+                                  gen_output,
+                                  target,
+                                  l2_weight=l2_weight)   # gen loss
+        disc_loss = discriminator_loss(disc_real_output,
+                                       disc_generated_output)  # disc loss
 
     # gradient
-    generator_gradient = gen_tape.gradient(gen_loss, generator.trainable_variables)
-    discriminator_gradient = disc_tape.gradient(disc_loss, discriminator.trainable_variables)
+    generator_gradient = gen_tape.gradient(gen_loss,
+                                           generator.trainable_variables)
+    discriminator_gradient = disc_tape.gradient(disc_loss,
+                                                discriminator.trainable_variables)
 
     # apply gradient
-    generator_optimizer.apply_gradients(zip(generator_gradient, generator.trainable_variables))
-    discriminator_optimizer.apply_gradients(zip(discriminator_gradient, discriminator.trainable_variables))
+    generator_optimizer.apply_gradients(zip(generator_gradient,
+                                            generator.trainable_variables))
+    discriminator_optimizer.apply_gradients(zip(discriminator_gradient,
+                                                discriminator.trainable_variables))
 
     return (gen_loss, disc_loss)
 
@@ -127,7 +138,10 @@ def train(epochs, l2_weight=100):
         # train
         for (bi, (target, input_image)) in enumerate(load_image_train(path)):
             elapsed_time = datetime.datetime.now() - start_time
-            (gen_loss, disc_loss) = train_step(input_image, target, l2_weight=l2_weight)
+            (gen_loss, disc_loss) = train_step(input_image,
+                                               target,
+                                               l2_weight=l2_weight)
+
             print("B/E:", bi, '/' , epoch, ", Generator loss:", gen_loss.numpy(), ", Discriminator loss:", disc_loss.numpy(), ', time:',  elapsed_time)
         # generated and see the progress
         # for bii, (tar, inp) in enumerate(load_image_test(path)):
@@ -202,23 +216,28 @@ if (__name__ == "__main__"):
                     # generator_optimizer = tf.compat.v1.train.AdamOptimizer(2e-4, beta1=0.5) ##
                     # discriminator_optimizer = tf.compat.v1.train.RMSPropOptimizer(2e-5) ##
                     #discriminator_optimizer = tf.compat.v1.train.AdamOptimizer(2e-4, beta1=0.5) # Which is unused...
-                    discriminator_optimizer = tf.keras.optimizers.Adam(learning_rate=lr_dis, beta_1=beta_1)
-                    generator_optimizer = tf.keras.optimizers.Adam(learning_rate=lr_gen, beta_1=beta_1)
+                    discriminator_optimizer = tf.keras.optimizers.Adam(learning_rate=lr_dis,
+                                                                       beta_1=beta_1)
+                    generator_optimizer = tf.keras.optimizers.Adam(learning_rate=lr_gen,
+                                                                   beta_1=beta_1)
 
                     # train
-                    (nm, ep) = train(epochs=25, l2_weight=l2_weight)
+                    (nm, ep) = train(epochs=25,
+                                     l2_weight=l2_weight)
 
                     fig_nmse = plt.figure(figsize=(10, 10))
                     plt.plot(ep, nm, '^-r')
 
-                    for x, y in zip(ep, nm):
+                    for (x, y) in zip(ep, nm):
                         if (x > 9):
-                            plt.text(x, y + 0.5, "%.3f" % y,  # 좌표 (x축 = v, y축 = y[0]..y[1], 표시 = y[0]..y[1])
+                            plt.text(x=x,
+                                     y=y + 0.5,
+                                     s=("%.3f" % y),
                                      fontsize=9,
                                      color='black',
-                                     horizontalalignment='center',  # horizontalalignment (left, center, right)
+                                     horizontalalignment='center',
                                      verticalalignment='bottom',
-                                     rotation=90)  # verticalalignment (top, center, bottom)
+                                     rotation=90)
 
                     plt.xlabel('Epoch')
                     plt.ylabel('NMSE(dB)')
@@ -231,4 +250,3 @@ if (__name__ == "__main__"):
 
                     timestr = time.strftime("%Y%m%d_%H%M%S")
                     fig_nmse.savefig("fig_temp/nmse_score_%s_2epoch" % (timestr))
-

@@ -14,11 +14,23 @@ There are skip connections between the encoder and decoder (as in U-Net).
 """
 
 class EncoderLayer(tf.keras.Model):
-    def __init__(self, filters, kernel_size, strides_s = 2, apply_batchnorm=True, add = False, padding_s = 'same'):
+    def __init__(self,
+                 filters,
+                 kernel_size,
+                 strides_s = 2,
+                 apply_batchnorm=True,
+                 add = False,
+                 padding_s = 'same'):
+
         super(EncoderLayer, self).__init__()
-        initializer = tf.random_normal_initializer(mean=0., stddev=0.02)
-        conv = layers.Conv2D(filters=filters, kernel_size=kernel_size, strides=strides_s,
-                             padding=padding_s, kernel_initializer=initializer, use_bias=False)
+        initializer = tf.random_normal_initializer(mean=0.0,
+                                                   stddev=0.02)
+        conv = layers.Conv2D(filters=filters,
+                             kernel_size=kernel_size,
+                             strides=strides_s,
+                             padding=padding_s,
+                             kernel_initializer=initializer,
+                             use_bias=False)
         # ac = layers.LeakyReLU()
         ac = layers.ReLU()
         self.encoder_layer = None
@@ -36,11 +48,22 @@ class EncoderLayer(tf.keras.Model):
 
 
 class DecoderLayer(tf.keras.Model):
-    def __init__(self, filters, kernel_size, strides_s = 2, apply_dropout=False, add = False):
+    def __init__(self,
+                 filters,
+                 kernel_size,
+                 strides_s = 2,
+                 apply_dropout=False,
+                 add = False):
+
         super(DecoderLayer, self).__init__()
-        initializer = tf.random_normal_initializer(mean=0., stddev=0.02)
-        dconv = layers.Conv2DTranspose(filters=filters, kernel_size=kernel_size, strides=strides_s,
-                                       padding='same', kernel_initializer=initializer, use_bias=False)
+        initializer = tf.random_normal_initializer(mean=0.0,
+                                                   stddev=0.02)
+        dconv = layers.Conv2DTranspose(filters=filters,
+                                       kernel_size=kernel_size,
+                                       strides=strides_s,
+                                       padding='same',
+                                       kernel_initializer=initializer,
+                                       use_bias=False)
         bn = layers.BatchNormalization()
         ac = layers.ReLU()
         self.decoder_layer = None
@@ -63,14 +86,28 @@ class Generator(tf.keras.Model):
         super(Generator, self).__init__()
         
         # Resize Input
-        p_layer_1 = DecoderLayer(filters=2, kernel_size=4, strides_s = 2, apply_dropout=False, add = True) 
-        p_layer_2  = DecoderLayer(filters=2, kernel_size=4, strides_s = 2, apply_dropout=False, add = True)
-        p_layer_3  = EncoderLayer(filters=2, kernel_size=(6,1),strides_s = (4,1), apply_batchnorm=False, add = True)
+        p_layer_1 = DecoderLayer(filters=2,
+                                 kernel_size=4,
+                                 strides_s = 2,
+                                 apply_dropout=False,
+                                 add = True)
+        p_layer_2  = DecoderLayer(filters=2,
+                                  kernel_size=4,
+                                  strides_s = 2,
+                                  apply_dropout=False,
+                                  add = True)
+        p_layer_3  = EncoderLayer(filters=2,
+                                  kernel_size=(6,1),
+                                  strides_s = (4,1),
+                                  apply_batchnorm=False,
+                                  add = True)
         
         self.p_layers = [p_layer_1,p_layer_2,p_layer_3]
 
         #encoder
-        encoder_layer_1 = EncoderLayer(filters=64*1,  kernel_size=4,apply_batchnorm=False)
+        encoder_layer_1 = EncoderLayer(filters=64*1,
+                                       kernel_size=4,
+                                       apply_batchnorm=False)
         encoder_layer_2 = EncoderLayer(filters=64*2, kernel_size=4)
         encoder_layer_3 = EncoderLayer(filters=64*4, kernel_size=4)
         encoder_layer_4 = EncoderLayer(filters=64*8, kernel_size=4)
@@ -86,8 +123,12 @@ class Generator(tf.keras.Model):
         self.decoder_layers = [decoder_layer_1, decoder_layer_2, decoder_layer_3, decoder_layer_4]
 
         initializer = tf.random_normal_initializer(mean=0., stddev=0.02)
-        self.last = layers.Conv2DTranspose(filters=2, kernel_size=4, strides=2, padding='same',
-                                           kernel_initializer=initializer, activation='tanh')
+        self.last = layers.Conv2DTranspose(filters=2,
+                                           kernel_size=4,
+                                           strides=2,
+                                           padding='same',
+                                           kernel_initializer=initializer,
+                                           activation='tanh')
 
     def call(self, x):
         # pass the encoder and record xs
@@ -107,5 +148,3 @@ class Generator(tf.keras.Model):
             x = tf.concat([x, encoder_xs[i]], axis=-1)     # skip connect
 
         return self.last(x)        # last
-
-
