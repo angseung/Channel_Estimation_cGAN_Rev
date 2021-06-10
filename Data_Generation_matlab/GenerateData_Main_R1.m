@@ -50,10 +50,13 @@ params.saveDataset=0;
 
 
 %% Generate Pilots 
-pilot = uniformPilotsGen(pilot_l);
-pilot = pilot{1,1};
-pilot_user = repmat(pilot,[1 users])';
+% pilot = uniformPilotsGen(pilot_l);
+% pilot = pilot{1,1};
+% pilot_user = repmat(pilot,[1 users])';
 
+pilot = cdm_gen_freq(pilot_l + 1, 1);
+pilot_user = pilot(:, 1 : pilot_l).';
+pilot_user = repmat(pilot_user,[1 users])';
 
 %% Genrate Quantized Siganl Y with Noise
 channels = zeros(length(DeepMIMO_dataset{1}.user),bs_ant,users);
@@ -71,7 +74,6 @@ end
 %% Convert complex data to two-channel data
 Y_sign(:,:,:,1) = sign(real(Y_noise)); % real part of Y
 Y_sign(:,:,:,2) = sign(imag(Y_noise)); % imag papt of Y
-
 
 channels_r(:,:,:,1) = real(channels); % real part of H
 channels_r(:,:,:,2) = imag(channels); % imag part of H

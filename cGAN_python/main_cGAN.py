@@ -1,6 +1,7 @@
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import tensorflow as tf
 import numpy as np
-import os
 import matplotlib.pyplot as plt
 from GAN.cGANGenerator import Generator
 from GAN.cGANDiscriminator import Discriminator
@@ -10,7 +11,7 @@ from scipy.io import loadmat, savemat
 import datetime
 import h5py
 import hdf5storage
-import skfuzzy as fuzz
+# import skfuzzy as fuzz
 
 # GPU Setting
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
@@ -20,23 +21,25 @@ config = tf.compat.v1.ConfigProto()
 config.gpu_options.allow_growth = True
 tf.compat.v1.enable_eager_execution(config=config)
 layers = tf.keras.layers
-
-
+cross_entropy = tf.keras.losses.BinaryCrossentropy(from_logits=True)
 
 # data path
-path = "../Data_Generation/Gan_Data/Gan_0_dBIndoor2p4_64ant_32users_8pilot.mat"
-
+path = "../Data_Generation_matlab/Gan_Data/Gan_0_dB_3_path_Indoor2p4_64ant_32users_8pilot.mat"
 
 # batch = 1 produces good results on U-NET
-BATCH_SIZE = 1              
+BATCH_SIZE = 1
 
 # model
 generator = Generator()
 discriminator = Discriminator()
 # optimizer
-generator_optimizer = tf.compat.v1.train.AdamOptimizer(2e-4, beta1=0.5)
-discriminator_optimizer = tf.compat.v1.train.RMSPropOptimizer(2e-5)
+
+# generator_optimizer = tf.compat.v1.train.AdamOptimizer(2e-4, beta1=0.5) ##
+# discriminator_optimizer = tf.compat.v1.train.RMSPropOptimizer(2e-5) ##
 #discriminator_optimizer = tf.compat.v1.train.AdamOptimizer(2e-4, beta1=0.5)
+discriminator_optimizer = tf.keras.optimizers.Adam(learning_rate=2e-5, beta_1 = 0.5)
+generator_optimizer = tf.keras.optimizers.Adam(learning_rate=2e-4, beta_1 = 0.5)
+
 
 """
 Discriminator loss:
@@ -58,11 +61,17 @@ def discriminator_loss(disc_real_output, disc_generated_output):
     """disc_real_output = [real_target]
        disc_generated_output = [generated_target]
     """
-    real_loss = tf.nn.sigmoid_cross_entropy_with_logits(
-            labels=tf.ones_like(disc_real_output), logits=disc_real_output)  # label=1
-    generated_loss = tf.nn.sigmoid_cross_entropy_with_logits(
-            labels=tf.zeros_like(disc_generated_output), logits=disc_generated_output)  # label=0
+    # real_loss = tf.nn.sigmoid_cross_entropy_with_logits(
+    #         labels=tf.ones_like(disc_real_output), logits=disc_real_output)  # label=1
+    #
+    # generated_loss = tf.nn.sigmoid_cross_entropy_with_logits(
+    #         labels=tf.zeros_like(disc_generated_output), logits=disc_generated_output)  # label=0
+
+    real_loss = cross_entropy(tf.ones_like(disc_real_output), disc_real_output)
+    generated_loss = cross_entropy(tf.zeros_like(disc_generated_output), disc_generated_output)
+
     total_disc_loss = tf.reduce_mean(real_loss) + tf.reduce_mean(generated_loss)
+
     return total_disc_loss
 
 
@@ -74,11 +83,13 @@ def generator_loss(disc_generated_output, gen_output, target, l2_weight=100):
         l2_weight: weight of L2 loss
     """
     # GAN loss
-    gen_loss = tf.nn.sigmoid_cross_entropy_with_logits(
-            labels=tf.ones_like(disc_generated_output), logits=disc_generated_output)
+    # gen_loss = tf.nn.sigmoid_cross_entropy_with_logits(
+    #         labels=tf.ones_like(disc_generated_output), logits=disc_generated_output)
+    gen_loss = cross_entropy(tf.ones_like(disc_generated_output), disc_generated_output)
     # L2 loss
     l2_loss = tf.reduce_mean(tf.abs(target - gen_output))
     total_gen_loss = tf.reduce_mean(gen_loss) + l2_weight * l2_loss
+
     return total_gen_loss
 
 
@@ -132,9 +143,9 @@ def train(epochs):
             gen_loss, disc_loss = train_step(input_image, target)
             print("B/E:", bi, '/' , epoch, ", Generator loss:", gen_loss.numpy(), ", Discriminator loss:", disc_loss.numpy(), ', time:',  elapsed_time)
         # generated and see the progress
-        for bii, (tar, inp) in enumerate(load_image_test(path)):            
-            if bii == 100:
-                generated_image(generator, inp, tar, t=epoch+1  )
+        # for bii, (tar, inp) in enumerate(load_image_test(path)):
+        #     if bii == 100:
+        #         generated_image(generator, inp, tar, t=epoch+1  )
 
         # save checkpoint
         # if (epoch + 1) % 2 == 0:
@@ -142,20 +153,24 @@ def train(epochs):
         #generator.save_weights(os.path.join(BASE_PATH, "weights/generator_"+str(epoch)+".h5"))
         #discriminator.save_weights(os.path.join(BASE_PATH, "weights/discriminator_"+str(epoch)+".h5"))
         
-        realim, inpuim = load_image_test_y(path)   
+        realim, inpuim = load_image_test_y(path)
         prediction = generator(inpuim)
-        
 
-        nm.append(fuzz.nmse(np.squeeze(realim), np.squeeze(prediction)))
+        error_ = np.sum((realim - prediction) ** 2, axis=None)
+        real_ = np.sum(realim ** 2, axis=None)
+        nmse_dB = 10 * np.log10(error_ / real_)
+        nm.append(nmse_dB)
+
+        # nm.append(fuzz.nmse(np.squeeze(realim), np.squeeze(prediction)))
         
         if epoch == epochs-1:
             nmse_epoch = TemporaryFile()
             np.save(nmse_epoch, nm)
         
         # Save the predicted Channel 
-        matfiledata = {} # make a dictionary to store the MAT data in
-        matfiledata[u'predict_Gan_0_dB_Indoor2p4_64ant_32users_8pilot'] = np.array(prediction) # *** u prefix for variable name = unicode format, no issues thru Python 3.5; advise keeping u prefix indicator format based on feedback despite docs ***
-        hdf5storage.write(matfiledata, '.', 'Results\Eest_cGAN_'+str(epoch + 1)+'_0db_Indoor2p4_64ant_32users_8pilot.mat', matlab_compatible=True)
+        # matfiledata = {} # make a dictionary to store the MAT data in
+        # matfiledata[u'predict_Gan_0_dB_Indoor2p4_64ant_32users_8pilot'] = np.array(prediction) # *** u prefix for variable name = unicode format, no issues thru Python 3.5; advise keeping u prefix indicator format based on feedback despite docs ***
+        # hdf5storage.write(matfiledata, '.', 'Results\Eest_cGAN_'+str(epoch + 1)+'_0db_Indoor2p4_64ant_32users_8pilot.mat', matlab_compatible=True)
         
         plt.figure()
         plt.plot(ep,nm,'^-r')
@@ -174,5 +189,6 @@ if __name__ == "__main__":
     plt.plot(ep,nm,'^-r')
     plt.xlabel('Epoch')
     plt.ylabel('NMSE')
-    plt.show();
+    plt.grid(True)
+    plt.show()
 
