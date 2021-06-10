@@ -11,7 +11,6 @@ from scipy.io import loadmat, savemat
 import datetime
 import h5py
 import hdf5storage
-# import skfuzzy as fuzz
 
 # GPU Setting
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
@@ -22,24 +21,6 @@ config.gpu_options.allow_growth = True
 tf.compat.v1.enable_eager_execution(config=config)
 layers = tf.keras.layers
 cross_entropy = tf.keras.losses.BinaryCrossentropy(from_logits=True)
-
-# data path
-path = "../Data_Generation_matlab/Gan_Data/Gan_0_dB_3_path_Indoor2p4_64ant_32users_8pilot.mat"
-
-# batch = 1 produces good results on U-NET
-BATCH_SIZE = 1
-
-# model
-generator = Generator()
-discriminator = Discriminator()
-# optimizer
-
-# generator_optimizer = tf.compat.v1.train.AdamOptimizer(2e-4, beta1=0.5) ##
-# discriminator_optimizer = tf.compat.v1.train.RMSPropOptimizer(2e-5) ##
-#discriminator_optimizer = tf.compat.v1.train.AdamOptimizer(2e-4, beta1=0.5)
-discriminator_optimizer = tf.keras.optimizers.Adam(learning_rate=2e-5, beta_1 = 0.5)
-generator_optimizer = tf.keras.optimizers.Adam(learning_rate=2e-4, beta_1 = 0.5)
-
 
 """
 Discriminator loss:
@@ -86,6 +67,7 @@ def generator_loss(disc_generated_output, gen_output, target, l2_weight=100):
     # gen_loss = tf.nn.sigmoid_cross_entropy_with_logits(
     #         labels=tf.ones_like(disc_generated_output), logits=disc_generated_output)
     gen_loss = cross_entropy(tf.ones_like(disc_generated_output), disc_generated_output)
+
     # L2 loss
     l2_loss = tf.reduce_mean(tf.abs(target - gen_output))
     total_gen_loss = tf.reduce_mean(gen_loss) + l2_weight * l2_loss
@@ -110,7 +92,6 @@ def generated_image(model, test_input, tar, t=0):
     plt.savefig(os.path.join("generated_img", "img_"+str(t)+".png"))
 
 
-
 def train_step(input_image, target):
     with tf.GradientTape() as gen_tape, tf.GradientTape() as disc_tape:
         gen_output = generator(input_image)                      # input -> generated_target
@@ -125,9 +106,11 @@ def train_step(input_image, target):
     # gradient
     generator_gradient = gen_tape.gradient(gen_loss, generator.trainable_variables)
     discriminator_gradient = disc_tape.gradient(disc_loss, discriminator.trainable_variables)
+
     # apply gradient
     generator_optimizer.apply_gradients(zip(generator_gradient, generator.trainable_variables))
     discriminator_optimizer.apply_gradients(zip(discriminator_gradient, discriminator.trainable_variables))
+
     return gen_loss, disc_loss
 
 
@@ -135,6 +118,7 @@ def train(epochs):
     nm = []
     ep = []
     start_time = datetime.datetime.now()
+
     for epoch in range(epochs):
         print("-----\nEPOCH:", epoch)
         # train
@@ -153,17 +137,17 @@ def train(epochs):
         #generator.save_weights(os.path.join(BASE_PATH, "weights/generator_"+str(epoch)+".h5"))
         #discriminator.save_weights(os.path.join(BASE_PATH, "weights/discriminator_"+str(epoch)+".h5"))
         
-        realim, inpuim = load_image_test_y(path)
+        (realim, inpuim) = load_image_test_y(path)
         prediction = generator(inpuim)
 
+        ## Calculate test NMSE score...
         error_ = np.sum((realim - prediction) ** 2, axis=None)
         real_ = np.sum(realim ** 2, axis=None)
         nmse_dB = 10 * np.log10(error_ / real_)
         nm.append(nmse_dB)
 
-        # nm.append(fuzz.nmse(np.squeeze(realim), np.squeeze(prediction)))
         
-        if epoch == epochs-1:
+        if (epoch == (epochs - 1)):
             nmse_epoch = TemporaryFile()
             np.save(nmse_epoch, nm)
         
@@ -174,13 +158,31 @@ def train(epochs):
         
         plt.figure()
         plt.plot(ep,nm,'^-r')
+        plt.grid(True)
         plt.xlabel('Epoch')
         plt.ylabel('NMSE')
-        plt.show();
+        plt.show()
     
     return nm, ep
 
-if __name__ == "__main__":
+if (__name__ == "__main__"):
+
+    # data path
+    path = "../Data_Generation_matlab/Gan_Data/Gan_10_dB_3_path_Indoor2p4_64ant_32users_8pilot_r1.mat"
+
+    # batch = 1 produces good results on U-NET
+    BATCH_SIZE = 1
+
+    # model
+    generator = Generator()
+    discriminator = Discriminator()
+
+    # optimizer
+    # generator_optimizer = tf.compat.v1.train.AdamOptimizer(2e-4, beta1=0.5) ##
+    # discriminator_optimizer = tf.compat.v1.train.RMSPropOptimizer(2e-5) ##
+    #discriminator_optimizer = tf.compat.v1.train.AdamOptimizer(2e-4, beta1=0.5) # Which is unused...
+    discriminator_optimizer = tf.keras.optimizers.Adam(learning_rate=2e-5, beta_1 = 0.5)
+    generator_optimizer = tf.keras.optimizers.Adam(learning_rate=2e-4, beta_1 = 0.5)
 
     # train
     nm, ep = train(epochs=10)

@@ -6,9 +6,9 @@ clc
 bs_ant= 64; % M= 64 BS Antennas
 users = 32; % K= 32 Users
 pilot_l = 8; % Pilots length is 8
-snr  = 0; % SNR = 0 dB
+snr  = 10; % SNR = 0 dB
 
-filename = ['Indoor2p4_',num2str(bs_ant),'ant_',num2str(users),'users_',num2str(pilot_l),'pilot'];
+filename = ['Indoor2p4_',num2str(bs_ant),'ant_',num2str(users),'users_',num2str(pilot_l),'pilot_r1'];
 
 %% Generate channel dataset H
 
