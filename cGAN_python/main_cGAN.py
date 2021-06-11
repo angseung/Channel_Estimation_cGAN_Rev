@@ -189,7 +189,7 @@ def train(epochs, l2_weight=100):
 #############
 
 # data path
-path = "../Data_Generation_matlab/Gan_Data/Gan_0_dB_3_path_Indoor2p5_64ant_32users_8pilot_r1.mat"
+path = "../Data_Generation_matlab/Gan_Data/Comb.mat"
 
 # Set hyper params...
 # beta_1_list = [0.5, 0.6, 0.7, 0.8, 0.9]
@@ -198,7 +198,7 @@ path = "../Data_Generation_matlab/Gan_Data/Gan_0_dB_3_path_Indoor2p5_64ant_32use
 # lr_dis_list = [1e-3, 5e-4, 2e-4, 1e-4, 5e-5, 1e-5]
 
 beta_1_list = [0.5]
-l2_weight_list = [80.0, 85.0, 90.0, 95.0, 100.0, 105.0, 110.0, 115.0, 120.0]
+l2_weight_list = [100.0]
 lr_gen_list = [2e-4]
 lr_dis_list = [2e-5]
 
