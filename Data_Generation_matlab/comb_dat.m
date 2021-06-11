@@ -21,4 +21,4 @@ input_da_test = cat(1, input_da_test_1, input_da_test_2);
 output_da = cat(1, output_da_1, output_da_2);
 output_da_test = cat(1, output_da_1_test, output_da_2_test);
 
-save("Gan_Data\Comb",'input_da','output_da','input_da_test','output_da_test','-v7.3');
+save("Gan_Data\Comb_3_12_25",'input_da','output_da','input_da_test','output_da_test','-v7.3');
