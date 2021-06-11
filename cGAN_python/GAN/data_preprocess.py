@@ -40,7 +40,7 @@ def load_image_train(path, batch_size = 1):
         imgs_B = input_image[i*batch_size:(i+1)*batch_size]
         
     
-        yield imgs_A, imgs_B
+        yield (imgs_A, imgs_B)
 
 
 def load_image_test(path, batch_size = 1):
@@ -61,7 +61,7 @@ def load_image_test(path, batch_size = 1):
         imgs_B = input_image[i*batch_size:(i+1)*batch_size]
         
     
-        yield imgs_A, imgs_B
+        yield (imgs_A, imgs_B)
         
 def load_image_test_y(path):
        
@@ -73,4 +73,4 @@ def load_image_test_y(path):
         input_image = np.transpose(np.array(file['input_da_test']))
         
 
-    return real_image, input_image
+    return (real_image, input_image)

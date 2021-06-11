@@ -8,12 +8,12 @@ users = 32; % K= 32 Users
 pilot_l = 8; % Pilots length is 8
 snr  = 10; % SNR = 0 dB
 
-filename = ['Indoor2p4_',num2str(bs_ant),'ant_',num2str(users),'users_',num2str(pilot_l),'pilot_r1'];
+filename = ['Indoor2p5_',num2str(bs_ant),'ant_',num2str(users),'users_',num2str(pilot_l),'pilot_r3'];
 
 %% Generate channel dataset H
 
 %------Ray-tracing scenario
-params.scenario='I1_2p4';                % The adopted ray tracing scenarios [check the available scenarios at www.aalkhateeb.net/DeepMIMO.html]
+params.scenario='I1_2p5';                % The adopted ray tracing scenarios [check the available scenarios at www.aalkhateeb.net/DeepMIMO.html]
 
 %------parameters set
 %Active base stations 
@@ -41,10 +41,10 @@ params.OFDM_sampling_factor=1;   % The constructed channels will be calculated o
 params.OFDM_limit=params.num_OFDM;                % Only the first params.OFDM_limit subcarriers will be considered when constructing the channels
 
 % Number of paths
-params.num_paths=3;                  % Maximum number of paths to be considered (a value between 1 and 25), e.g., choose 1 if you are only interested in the strongest path
+params.num_paths=25;                  % Maximum number of paths to be considered (a value between 1 and 25), e.g., choose 1 if you are only interested in the strongest path
 
 params.saveDataset=0;
- 
+
 % -------------------------- Dataset Generation -----------------%
 [DeepMIMO_dataset,params]=DeepMIMO_generator(params); % Get H (i.e.,DeepMIMO_dataset )
 
@@ -67,7 +67,8 @@ Y_sign = zeros(length(DeepMIMO_dataset{1}.user),bs_ant,pilot_l,2);
 for i = 1:length(DeepMIMO_dataset{1}.user)
     channels(i,:,:) = normalize(DeepMIMO_dataset{1}.user{i}.channel,'scale');%%
     Y(i,:,:) = DeepMIMO_dataset{1}.user{i}.channel*pilot_user;
-    Y_noise(i,:,:) = awgn(Y(i,:,:),snr,'measured');
+    Y_noise(i,:,:) = awgn(Y(i,:,:), snr, 'measured');
+%     Y_noise(i,:,:) = awgn_noise(Y(i,:,:), snr);
 end
 
 
@@ -78,7 +79,7 @@ Y_sign(:,:,:,2) = sign(imag(Y_noise)); % imag papt of Y
 channels_r(:,:,:,1) = real(channels); % real part of H
 channels_r(:,:,:,2) = imag(channels); % imag part of H
 
-% Shuffle data 
+% Shuffle data
 shuff = randi([1,length(DeepMIMO_dataset{1}.user)],length(DeepMIMO_dataset{1}.user),1);
 Y_sign = Y_sign(shuff,:,:,:);
 channels_r = channels_r(shuff,:,:,:);

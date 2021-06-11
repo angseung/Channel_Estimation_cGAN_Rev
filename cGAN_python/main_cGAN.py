@@ -184,69 +184,71 @@ def train(epochs, l2_weight=100):
     
     return nm, ep
 
-if (__name__ == "__main__"):
+#############
+####START####
+#############
 
-    # data path
-    path = "../Data_Generation_matlab/Gan_Data/Gan_10_dB_3_path_Indoor2p5_64ant_32users_8pilot_r1.mat"
+# data path
+path = "../Data_Generation_matlab/Gan_Data/Gan_0_dB_3_path_Indoor2p5_64ant_32users_8pilot_r1.mat"
 
-    # Set hyper params...
-    beta_1_list = [0.5, 0.6, 0.7, 0.8, 0.9]
-    l2_weight_list = [0.0, 1.0, 10.0, 50.0, 100.0]
-    lr_gen_list = [1e-3, 5e-4, 2e-4, 1e-4, 5e-5, 1e-5]
-    lr_dis_list = [1e-3, 5e-4, 2e-4, 1e-4, 5e-5, 1e-5]
+# Set hyper params...
+# beta_1_list = [0.5, 0.6, 0.7, 0.8, 0.9]
+# l2_weight_list = [0.0, 1.0, 10.0, 50.0, 100.0]
+# lr_gen_list = [1e-3, 5e-4, 2e-4, 1e-4, 5e-5, 1e-5]
+# lr_dis_list = [1e-3, 5e-4, 2e-4, 1e-4, 5e-5, 1e-5]
 
-    beta_1_list = [0.5]
-    l2_weight_list = [100.0]
-    lr_gen_list = [2e-4]
-    lr_dis_list = [2e-5]
+beta_1_list = [0.5]
+l2_weight_list = [80.0, 85.0, 90.0, 95.0, 100.0, 105.0, 110.0, 115.0, 120.0]
+lr_gen_list = [2e-4]
+lr_dis_list = [2e-5]
 
-    # batch = 1 produces good results on U-NET
-    BATCH_SIZE = 1
+# batch = 1 produces good results on U-NET
+BATCH_SIZE = 1
 
-    for beta_1 in beta_1_list:
-        for l2_weight in l2_weight_list:
-            for lr_gen in lr_gen_list:
-                for lr_dis in lr_dis_list:
+for beta_1 in beta_1_list:
+    for l2_weight in l2_weight_list:
+        for lr_gen in lr_gen_list:
+            for lr_dis in lr_dis_list:
 
-                    # model
-                    generator = Generator()
-                    discriminator = Discriminator()
+                # model
+                generator = Generator()
+                discriminator = Discriminator()
 
-                    # optimizer
-                    # generator_optimizer = tf.compat.v1.train.AdamOptimizer(2e-4, beta1=0.5) ##
-                    # discriminator_optimizer = tf.compat.v1.train.RMSPropOptimizer(2e-5) ##
-                    #discriminator_optimizer = tf.compat.v1.train.AdamOptimizer(2e-4, beta1=0.5) # Which is unused...
-                    discriminator_optimizer = tf.keras.optimizers.Adam(learning_rate=lr_dis,
-                                                                       beta_1=beta_1)
-                    generator_optimizer = tf.keras.optimizers.Adam(learning_rate=lr_gen,
+                # optimizer
+                # generator_optimizer = tf.compat.v1.train.AdamOptimizer(2e-4, beta1=0.5) ##
+                # discriminator_optimizer = tf.compat.v1.train.RMSPropOptimizer(2e-5) ##
+                #discriminator_optimizer = tf.compat.v1.train.AdamOptimizer(2e-4, beta1=0.5) # Which is unused...
+                discriminator_optimizer = tf.keras.optimizers.Adam(learning_rate=lr_dis,
                                                                    beta_1=beta_1)
+                generator_optimizer = tf.keras.optimizers.Adam(learning_rate=lr_gen,
+                                                               beta_1=beta_1)
 
-                    # train
-                    (nm, ep) = train(epochs=25,
-                                     l2_weight=l2_weight)
+                # train
+                (nm, ep) = train(epochs=25,
+                                 l2_weight=l2_weight)
 
-                    fig_nmse = plt.figure(figsize=(10, 10))
-                    plt.plot(ep, nm, '^-r')
+                fig_nmse = plt.figure(figsize=(10, 10))
+                plt.plot(ep, nm, '^-r')
 
-                    for (x, y) in zip(ep, nm):
-                        if (x > 9):
-                            plt.text(x=x,
-                                     y=y + 0.5,
-                                     s=("%.3f" % y),
-                                     fontsize=9,
-                                     color='black',
-                                     horizontalalignment='center',
-                                     verticalalignment='bottom',
-                                     rotation=90)
+                for (x, y) in zip(ep, nm):
+                    if (x > 9):
+                        plt.text(x=x,
+                                 y=y + 0.5,
+                                 s=("%.3f" % y),
+                                 fontsize=9,
+                                 color='black',
+                                 horizontalalignment='center',
+                                 verticalalignment='bottom',
+                                 rotation=90)
 
-                    plt.xlabel('Epoch')
-                    plt.ylabel('NMSE(dB)')
-                    plt.title("[lr_gen : %.6f][lr_dis : %.6f][beta1 : %.3f][l2_weight : %.6f]"
-                              % (lr_gen, lr_dis, beta_1, l2_weight))
-                    plt.grid(True)
+                plt.xlabel('Epoch')
+                plt.ylabel('NMSE(dB)')
+                plt.title("[lr_gen : %.6f][lr_dis : %.6f][beta1 : %.3f][l2_weight : %.6f]"
+                          % (lr_gen, lr_dis, beta_1, l2_weight))
+                plt.grid(True)
 
-                    if (is_not_linux):
-                        plt.show()
+                if (is_not_linux):
+                    plt.show()
 
-                    timestr = time.strftime("%Y%m%d_%H%M%S")
-                    fig_nmse.savefig("fig_temp/nmse_score_%s_2epoch" % (timestr))
+                timestr = time.strftime("%Y%m%d_%H%M%S")
+                fig_nmse.savefig("fig_temp/nmse_score_%s_2epoch" % (timestr))
