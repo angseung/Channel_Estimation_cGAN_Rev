@@ -8,7 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from GAN.cGANGenerator import Generator
 from GAN.cGANDiscriminator import Discriminator
-from GAN.data_preprocess import load_image_train, load_image_test, load_image_test_y
+from GAN.data_preprocess import load_image_train, load_image_test, load_image_test_y, view_channel_dist
 from tempfile import TemporaryFile
 from scipy.io import loadmat, savemat
 import datetime
@@ -61,4 +61,6 @@ for snr in test_snr_list:
 
         print("[%d SNR, %d PATH]... Estimation Performance : [%2.4fdB] with [%d] test samples..."
               % (snr, paths, nmse_dB, realim.shape[0]))
+
+        view_channel_dist(TestData)
 

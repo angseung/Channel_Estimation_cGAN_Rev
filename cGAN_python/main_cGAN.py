@@ -8,7 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from GAN.cGANGenerator import Generator
 from GAN.cGANDiscriminator import Discriminator
-from GAN.data_preprocess import load_image_train, load_image_test, load_image_test_y
+from GAN.data_preprocess import load_image_train, load_image_test, load_image_test_y, view_channel_dist
 from tempfile import TemporaryFile
 from scipy.io import loadmat, savemat
 import datetime
@@ -243,7 +243,7 @@ for beta_1 in beta_1_list:
                                  verticalalignment='bottom',
                                  rotation=90)
 
-                plt.xlabel('Epoch')
+                plt.xlabel('Epoch, %s' % (path[:35]))
                 plt.ylabel('NMSE(dB)')
                 plt.title("[lr_gen : %.6f][lr_dis : %.6f][beta1 : %.3f][l2_weight : %.6f]"
                           % (lr_gen, lr_dis, beta_1, l2_weight))

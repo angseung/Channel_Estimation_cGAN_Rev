@@ -1,5 +1,6 @@
 import scipy
 import scipy.misc
+from sys import platform
 from glob import glob
 import numpy as np
 import matplotlib.pyplot as plt
@@ -59,6 +60,17 @@ def load_image_test(path, batch_size = 1):
         
     
         yield (imgs_A, imgs_B)
+
+
+def load_image_train_y(path):
+    with h5py.File(path, 'r') as file:
+        real_image = np.transpose(np.array(file['output_da']))
+
+    with h5py.File(path, 'r') as file:
+        input_image = np.transpose(np.array(file['input_da']))
+
+    return (real_image, input_image)
+
         
 def load_image_test_y(path):
        
@@ -71,3 +83,30 @@ def load_image_test_y(path):
         
 
     return (real_image, input_image)
+
+def view_channel_dist(path, TRAIN_VIEW_OPT = False):
+
+    if (TRAIN_VIEW_OPT):
+        (channel, _) = load_image_train_y(path)
+    else:
+        (channel, _) = load_image_test_y(path)
+
+    channel_r = channel[:, :, :, 0].flatten()
+    channel_i = channel[:, :, :, 1].flatten()
+
+    fig_hist = plt.figure(figsize=(10, 10))
+    plt.subplot(211)
+    plt.hist(channel_r, bins=1000)
+    plt.grid(True)
+    plt.title("Real Part")
+
+    plt.subplot(212)
+    plt.hist(channel_i, bins=1000)
+    plt.grid(True)
+    plt.title("Imaginary Part")
+    plt.suptitle(path[35:])
+
+    if (platform != 'linux'):
+        plt.show()
+
+    return None
