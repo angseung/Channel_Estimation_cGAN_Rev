@@ -189,7 +189,7 @@ def train(epochs, l2_weight=100):
 #############
 
 # data path
-path = "../Data_Generation_matlab/Gan_Data/Comb.mat"
+path = "../Data_Generation_matlab/Gan_Data/Comb_3_12_25.mat"
 
 # Set hyper params...
 # beta_1_list = [0.5, 0.6, 0.7, 0.8, 0.9]
@@ -204,6 +204,8 @@ lr_dis_list = [2e-5]
 
 # batch = 1 produces good results on U-NET
 BATCH_SIZE = 1
+epochs = 25
+NMSE_SAVE_OPT = True
 
 for beta_1 in beta_1_list:
     for l2_weight in l2_weight_list:
@@ -224,7 +226,7 @@ for beta_1 in beta_1_list:
                                                                beta_1=beta_1)
 
                 # train
-                (nm, ep) = train(epochs=25,
+                (nm, ep) = train(epochs=epochs,
                                  l2_weight=l2_weight)
 
                 fig_nmse = plt.figure(figsize=(10, 10))
@@ -252,3 +254,8 @@ for beta_1 in beta_1_list:
 
                 timestr = time.strftime("%Y%m%d_%H%M%S")
                 fig_nmse.savefig("fig_temp/nmse_score_%s_2epoch" % (timestr))
+
+                if(NMSE_SAVE_OPT):
+                    fname = "nmse_dB_%.5f_%.5f_%.2f_%.2f" % (lr_gen, lr_dis, beta_1, l2_weight)
+                    nm_np = np.array(nm)
+                    nm_np.save(fname, nm_np)

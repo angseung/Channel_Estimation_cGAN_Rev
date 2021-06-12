@@ -15,7 +15,8 @@ import datetime
 import h5py
 import hdf5storage
 
-path_ori = "../Data_Generation_matlab/Gan_Data/Gan_10_dB_3_path_Indoor2p5_64ant_32users_8pilot_r1.mat"
+# path_ori = "../Data_Generation_matlab/Gan_Data/Gan_10_dB_3_path_Indoor2p5_64ant_32users_8pilot_r1.mat"
+path_ori = "../Data_Generation_matlab/Gan_Data/Comb_3_12_25.mat"
 path_12 = "../Data_Generation_matlab/Gan_Data/Gan_10_dB_12_path_Indoor2p5_64ant_32users_8pilot_r2.mat"
 path_25 = "../Data_Generation_matlab/Gan_Data/Gan_10_dB_25_path_Indoor2p5_64ant_32users_8pilot_r3.mat"
 
