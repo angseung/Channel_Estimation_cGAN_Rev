@@ -203,7 +203,8 @@ lr_dis_list = [2e-5]
 
 # batch = 1 produces good results on U-NET
 BATCH_SIZE = 1
-epochs = 25
+snr = 10
+epochs = 17 # The best performance
 NMSE_SAVE_OPT = True
 MODEL_SAVE_OPT = True
 
@@ -267,8 +268,8 @@ for beta_1 in beta_1_list:
                                   (l2_weight == 100.0))
 
                 if (MODEL_SAVE_OPT and MODEL_SAVE_COND):
-                    generator.save("Models/Gen_%.5f_%.5f_%.2f_%.2f"
-                                   % (lr_gen, lr_dis, beta_1, l2_weight))
-                    discriminator.save("Models/Dis_%.5f_%.5f_%.2f_%.2f"
-                                       % (lr_gen, lr_dis, beta_1, l2_weight))
+                    generator.save("Models/Gen_%.5f_%.5f_%.2f_%.2f_%ddB"
+                                   % (lr_gen, lr_dis, beta_1, l2_weight, snr))
+                    # discriminator.save("Models/Dis_%.5f_%.5f_%.2f_%.2f"
+                    #                    % (lr_gen, lr_dis, beta_1, l2_weight))
 
