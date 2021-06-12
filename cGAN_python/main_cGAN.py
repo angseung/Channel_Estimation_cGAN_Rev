@@ -262,8 +262,8 @@ for beta_1 in beta_1_list:
                     nm_np = np.array(nm)
                     nm_np.save(fname, nm_np)
 
-                MODEL_SAVE_COND = ((lr_gen == 1e-4) and
-                                  (lr_dis == 1e-5) and
+                MODEL_SAVE_COND = ((lr_gen == 2e-4) and
+                                  (lr_dis == 2e-5) and
                                   (beta_1 == 0.5) and
                                   (l2_weight == 100.0))
 
