@@ -1,7 +1,4 @@
 import tensorflow as tf
-import numpy as np
-import os
-import matplotlib.pyplot as plt
 
 config = tf.compat.v1.ConfigProto()
 config.gpu_options.allow_growth = True
@@ -12,6 +9,7 @@ layers = tf.keras.layers
 The architecture of generator is a modified U-Net.
 There are skip connections between the encoder and decoder (as in U-Net).
 """
+
 
 class EncoderLayer(tf.keras.Model):
     def __init__(self,
@@ -75,7 +73,6 @@ class DecoderLayer(tf.keras.Model):
             self.decoder_layer = tf.keras.Sequential([dconv, bn, drop, ac])
         else:
             self.decoder_layer = tf.keras.Sequential([dconv, bn, ac])
-            
 
     def call(self, x):
         return self.decoder_layer(x)
@@ -115,7 +112,7 @@ class Generator(tf.keras.Model):
         self.encoder_layers = [encoder_layer_1, encoder_layer_2, encoder_layer_3, encoder_layer_4,
                                encoder_layer_5]
 
-        # deconder
+        # decoder
         decoder_layer_1 = DecoderLayer(filters=64*8, kernel_size=4, apply_dropout=True)
         decoder_layer_2 = DecoderLayer(filters=64*8, kernel_size=4,apply_dropout=True)
         decoder_layer_3 = DecoderLayer(filters=64*8, kernel_size=4, apply_dropout=True)
@@ -150,4 +147,4 @@ class Generator(tf.keras.Model):
             x = decoder_layer(x)
             x = tf.concat([x, encoder_xs[i]], axis=-1)     # skip connect
 
-        return self.last(x)        # last
+        return self.last(x)

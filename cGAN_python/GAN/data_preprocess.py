@@ -1,13 +1,8 @@
-import scipy
-import scipy.misc
 from sys import platform
-from glob import glob
 import numpy as np
 import matplotlib.pyplot as plt
-import  random
-from scipy.io import loadmat
+import random
 import h5py
-import time
 import tensorflow as tf
 
 config = tf.compat.v1.ConfigProto()

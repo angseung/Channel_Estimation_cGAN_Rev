@@ -1,12 +1,9 @@
 import tensorflow as tf
-import numpy as np
-import matplotlib.pyplot as plt
-import os
-
 config = tf.compat.v1.ConfigProto()
 config.gpu_options.allow_growth = True
 tf.compat.v1.enable_eager_execution(config=config)
 layers = tf.keras.layers
+
 
 class EncoderLayer(tf.keras.Model):
     def __init__(self,
@@ -43,6 +40,7 @@ class EncoderLayer(tf.keras.Model):
 """
 The Discriminator is a PatchGAN.
 """
+
 
 class Discriminator(tf.keras.Model):
     def __init__(self):

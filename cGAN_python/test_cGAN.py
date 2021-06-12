@@ -1,19 +1,9 @@
 import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
-from sys import platform
-import datetime
-import time
 import tensorflow as tf
 import numpy as np
-import matplotlib.pyplot as plt
-from GAN.cGANGenerator import Generator
-from GAN.cGANDiscriminator import Discriminator
-from GAN.data_preprocess import load_image_train, load_image_test, load_image_test_y, view_channel_dist
-from tempfile import TemporaryFile
-from scipy.io import loadmat, savemat
-import datetime
-import h5py
-import hdf5storage
+from GAN.data_preprocess import load_image_test_y, view_channel_dist
+
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 # GPU Setting
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
