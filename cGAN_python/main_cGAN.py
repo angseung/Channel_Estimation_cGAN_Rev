@@ -255,7 +255,20 @@ for beta_1 in beta_1_list:
                 timestr = time.strftime("%Y%m%d_%H%M%S")
                 fig_nmse.savefig("fig_temp/nmse_score_%s_2epoch" % (timestr))
 
-                if(NMSE_SAVE_OPT):
-                    fname = "nmse_dB_%.5f_%.5f_%.2f_%.2f" % (lr_gen, lr_dis, beta_1, l2_weight)
+                fname = "nmse_dB_%.5f_%.5f_%.2f_%.2f" % (lr_gen, lr_dis, beta_1, l2_weight)
+
+                if (NMSE_SAVE_OPT):
                     nm_np = np.array(nm)
                     nm_np.save(fname, nm_np)
+
+                MODEL_SAVE_OPT = ((lr_gen == 1e-4) and
+                                  (lr_dis == 1e-5) and
+                                  (beta_1 == 0.5) and
+                                  (l2_weight == 100.0))
+
+                if (MODEL_SAVE_OPT):
+                    generator.save("Models/Gen_%.5f_%.5f_%.2f_%.2f"
+                                   % (lr_gen, lr_dis, beta_1, l2_weight))
+                    discriminator.save("Models/Dis_%.5f_%.5f_%.2f_%.2f"
+                                       % (lr_gen, lr_dis, beta_1, l2_weight))
+
