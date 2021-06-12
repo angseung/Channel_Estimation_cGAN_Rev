@@ -196,7 +196,7 @@ for beta_1 in beta_1_list:
                 timestr = time.strftime("%Y%m%d_%H%M%S")
                 fig_nmse.savefig("fig_temp/nmse_score_%s_2epoch" % (timestr))
 
-                fname = "nmse_dB_%.5f_%.5f_%.2f_%.2f" % (lr_gen, lr_dis, beta_1, l2_weight)
+                fname = "nmse/nmse_dB_%.5f_%.5f_%.2f_%.2f" % (lr_gen, lr_dis, beta_1, l2_weight)
 
                 if (NMSE_SAVE_OPT):
                     nm_np = np.array(nm)
