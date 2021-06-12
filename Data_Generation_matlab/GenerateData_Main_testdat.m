@@ -6,7 +6,7 @@ clc
 bs_ant= 64; % M= 64 BS Antennas
 users = 32; % K= 32 Users
 pilot_l = 8; % Pilots length is 8
-snr  = 10; % SNR = 0 dB
+snr  = 0; % SNR = 0 dB
 
 filename = ['Indoor2p5_',num2str(bs_ant),'ant_',num2str(users),'users_',num2str(pilot_l),'pilot_testdat'];
 
@@ -41,7 +41,7 @@ params.OFDM_sampling_factor=1;   % The constructed channels will be calculated o
 params.OFDM_limit=params.num_OFDM;                % Only the first params.OFDM_limit subcarriers will be considered when constructing the channels
 
 % Number of paths
-params.num_paths=12;                  % Maximum number of paths to be considered (a value between 1 and 25), e.g., choose 1 if you are only interested in the strongest path
+params.num_paths=25;                  % Maximum number of paths to be considered (a value between 1 and 25), e.g., choose 1 if you are only interested in the strongest path
 
 params.saveDataset=0;
 
