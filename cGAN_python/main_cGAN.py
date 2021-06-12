@@ -206,6 +206,7 @@ lr_dis_list = [2e-5]
 BATCH_SIZE = 1
 epochs = 25
 NMSE_SAVE_OPT = True
+MODEL_SAVE_OPT = True
 
 for beta_1 in beta_1_list:
     for l2_weight in l2_weight_list:
@@ -261,12 +262,12 @@ for beta_1 in beta_1_list:
                     nm_np = np.array(nm)
                     nm_np.save(fname, nm_np)
 
-                MODEL_SAVE_OPT = ((lr_gen == 1e-4) and
+                MODEL_SAVE_COND = ((lr_gen == 1e-4) and
                                   (lr_dis == 1e-5) and
                                   (beta_1 == 0.5) and
                                   (l2_weight == 100.0))
 
-                if (MODEL_SAVE_OPT):
+                if (MODEL_SAVE_OPT and MODEL_SAVE_COND):
                     generator.save("Models/Gen_%.5f_%.5f_%.2f_%.2f"
                                    % (lr_gen, lr_dis, beta_1, l2_weight))
                     discriminator.save("Models/Dis_%.5f_%.5f_%.2f_%.2f"
