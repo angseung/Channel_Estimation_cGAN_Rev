@@ -260,7 +260,7 @@ for beta_1 in beta_1_list:
 
                 if (NMSE_SAVE_OPT):
                     nm_np = np.array(nm)
-                    nm_np.save(fname, nm_np)
+                    np.save(fname, nm_np)
 
                 MODEL_SAVE_COND = ((lr_gen == 2e-4) and
                                   (lr_dis == 2e-5) and
