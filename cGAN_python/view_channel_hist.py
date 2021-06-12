@@ -1,19 +1,9 @@
 import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
-from sys import platform
-import datetime
-import time
-import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
-from GAN.cGANGenerator import Generator
-from GAN.cGANDiscriminator import Discriminator
-from GAN.data_preprocess import load_image_train, load_image_test, load_image_test_y
-from tempfile import TemporaryFile
-from scipy.io import loadmat, savemat
-import datetime
-import h5py
-import hdf5storage
+from GAN.data_preprocess import load_image_test_y
+
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 # path_ori = "../Data_Generation_matlab/Gan_Data/Gan_10_dB_3_path_Indoor2p5_64ant_32users_8pilot_r1.mat"
 path_ori = "../Data_Generation_matlab/Gan_Data/Comb_3_12_25.mat"
