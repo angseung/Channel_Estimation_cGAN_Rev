@@ -23,22 +23,19 @@ def load_image_train(path, batch_size = 1):
     with h5py.File(path, 'r') as file:
         input_image = np.transpose(np.array(file['input_da']))
         
-    # real_image = real_image[1:10,:,:,:]
-    # input_image = input_image[1:10,:,:,:]
-        
     SIZE_IN= real_image.shape
     list_im=list(range(0, SIZE_IN[0]))
 
     batch_im = random.sample(list_im,SIZE_IN[0])
-    real_image = real_image[batch_im,:,:,:]
-    input_image = input_image[batch_im,:,:,:]
+    real_image = real_image[batch_im, :, :, :]
+    input_image = input_image[batch_im, :, :, :]
     
     n_batches = int(SIZE_IN[0] / batch_size)
     
-    for i in range(n_batches-1):
-        imgs_A = real_image[i*batch_size:(i+1)*batch_size]
-        imgs_B = input_image[i*batch_size:(i+1)*batch_size]
-        
+    for i in range(n_batches - 1):
+        imgs_A = real_image[i * batch_size : (i + 1) * batch_size]
+        imgs_B = input_image[i * batch_size : (i + 1) * batch_size]
+
     
         yield (imgs_A, imgs_B)
 
@@ -56,9 +53,9 @@ def load_image_test(path, batch_size = 1):
 
     n_batches = int(SIZE_IN[0] / batch_size)
     
-    for i in range(n_batches-1):
-        imgs_A = real_image[i*batch_size:(i+1)*batch_size]
-        imgs_B = input_image[i*batch_size:(i+1)*batch_size]
+    for i in range(n_batches - 1):
+        imgs_A = real_image[i * batch_size : (i + 1) * batch_size]
+        imgs_B = input_image[i * batch_size : (i + 1) * batch_size]
         
     
         yield (imgs_A, imgs_B)

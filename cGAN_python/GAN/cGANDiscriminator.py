@@ -1,7 +1,6 @@
 import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
-# from GAN.cGANGenerator import EncoderLayer
 import os
 
 config = tf.compat.v1.ConfigProto()
@@ -19,6 +18,7 @@ class EncoderLayer(tf.keras.Model):
                  padding_s = 'same'):
 
         super(EncoderLayer, self).__init__()
+
         initializer = tf.random_normal_initializer(mean=0., stddev=0.02)
         conv = layers.Conv2D(filters=filters,
                              kernel_size=kernel_size,

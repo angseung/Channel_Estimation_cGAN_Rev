@@ -95,7 +95,7 @@ def generated_image(model, test_input, tar, t=0):
         plt.imshow(display_list[i]) 
         plt.axis("off")
 
-    plt.savefig(os.path.join("generated_img", "img_"+str(t)+".png"))
+    plt.savefig(os.path.join("generated_img", "img_" + str(t) + ".png"))
 
 
 def train_step(input_image, target, l2_weight=100):
@@ -162,7 +162,6 @@ def train(epochs, l2_weight=100):
         real_ = np.sum(realim ** 2, axis=None)
         nmse_dB = 10 * np.log10(error_ / real_)
         nm.append(nmse_dB)
-
         
         # if (epoch == (epochs - 1)):
         #     nmse_epoch = TemporaryFile()

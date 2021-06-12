@@ -102,7 +102,7 @@ class Generator(tf.keras.Model):
                                   apply_batchnorm=False,
                                   add = True)
         
-        self.p_layers = [p_layer_1,p_layer_2,p_layer_3]
+        self.p_layers = [p_layer_1, p_layer_2, p_layer_3]
 
         #encoder
         encoder_layer_1 = EncoderLayer(filters=64*1,
@@ -136,14 +136,17 @@ class Generator(tf.keras.Model):
             x = p_layer(x)
 
         encoder_xs = []
+
         for encoder_layer in self.encoder_layers:
             x = encoder_layer(x)
             encoder_xs.append(x)
+
         encoder_xs = encoder_xs[:-1][::-1]    # reverse
+
         assert len(encoder_xs) == 4
 
         # pass the decoder and apply skip connection
-        for i, decoder_layer in enumerate(self.decoder_layers):
+        for (i, decoder_layer) in enumerate(self.decoder_layers):
             x = decoder_layer(x)
             x = tf.concat([x, encoder_xs[i]], axis=-1)     # skip connect
 
