@@ -42,7 +42,9 @@ def generated_image(model, test_input, tar, t=0):
     """Dispaly  the results of Generator"""
     prediction = model(test_input)
     # plt.figure(figsize=(15, 15))
-    display_list = [np.squeeze(test_input[:, :, :, 0]), np.squeeze(tar[:, :, :, 0]), np.squeeze(prediction[:, :, :, 0])]
+    display_list = [np.squeeze(test_input[:, :, :, 0]),
+                    np.squeeze(tar[:, :, :, 0]),
+                    np.squeeze(prediction[:, :, :, 0])]
 
     title = ['Input Y', 'Target H', 'Prediction H']
     
@@ -60,7 +62,6 @@ def train_step(input_image, target, l2_weight=100):
         gen_output = generator(input_image)                      # input -> generated_target
         disc_real_output = discriminator(target)  # [input, target] -> disc output
         disc_generated_output = discriminator(gen_output)  # [input, generated_target] -> disc output
-        # print("*", gen_output.shape, disc_real_output.shape, disc_generated_output.shape)
 
         # calculate loss
         gen_loss = generator_loss(disc_generated_output,
@@ -99,7 +100,10 @@ def train(epochs, l2_weight=100):
                                                target,
                                                l2_weight=l2_weight)
 
-            print("B/E:", bi, '/' , epoch, ", Generator loss:", gen_loss.numpy(), ", Discriminator loss:", disc_loss.numpy(), ', time:',  elapsed_time)
+            print("B/E:", bi, '/' , epoch,
+                  ", Generator loss:", gen_loss.numpy(),
+                  ", Discriminator loss:", disc_loss.numpy(),
+                  ', time:',  elapsed_time)
         ep.append(epoch + 1)
         
         (realim, inpuim) = load_image_test_y(path)
@@ -120,11 +124,9 @@ def train(epochs, l2_weight=100):
         if (is_not_linux):
             plt.show()
     
-    return nm, ep
+    return (nm, ep)
 
-#############
-####START####
-#############
+
 is_not_linux = (platform != 'linux')
 
 # data path
