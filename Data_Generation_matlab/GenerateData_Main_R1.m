@@ -6,9 +6,9 @@ clc
 bs_ant= 64; % M= 64 BS Antennas
 users = 32; % K= 32 Users
 pilot_l = 8; % Pilots length is 8
-snr  = 10; % SNR = 0 dB
+snr  = 10; % SNR = 10 dB
 
-filename = ['Indoor2p5_',num2str(bs_ant),'ant_',num2str(users),'users_',num2str(pilot_l),'pilot_r3'];
+filename = ['Indoor2p5_',num2str(bs_ant),'ant_',num2str(users),'users_',num2str(pilot_l),'pilot_r4'];
 
 %% Generate channel dataset H
 
@@ -21,7 +21,7 @@ params.active_BS=32;          % Includes the numbers of the active BSs (values f
 
 % Active users
 params.active_user_first=1;       % The first row of the considered receivers section (check the scenario description for the receiver row map)
-params.active_user_last=11;        % The last row of the considered receivers section (check the scenario description for the receiver row map)
+params.active_user_last=16;        % The last row of the considered receivers section (check the scenario description for the receiver row map)
 
 % Number of BS Antenna 
 params.num_ant_x=1;                  % Number of the UPA antenna array on the x-axis 

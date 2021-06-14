@@ -130,7 +130,7 @@ def train(epochs, l2_weight=100):
 is_not_linux = (platform != 'linux')
 
 # data path
-path = "../Data_Generation_matlab/Gan_Data/Comb_3_12_25.mat"
+path = "../Data_Generation_matlab/Gan_Data/Comb_3_12_25_rev.mat"
 
 # Set hyper params...
 # beta_1_list = [0.5, 0.6, 0.7, 0.8, 0.9]

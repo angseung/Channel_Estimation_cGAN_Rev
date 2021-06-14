@@ -6,7 +6,7 @@ clc
 bs_ant= 64; % M= 64 BS Antennas
 users = 32; % K= 32 Users
 pilot_l = 8; % Pilots length is 8
-snr  = 0; % SNR = 0 dB
+snr  = 10; % SNR = 10 dB
 
 filename = ['Indoor2p5_',num2str(bs_ant),'ant_',num2str(users),'users_',num2str(pilot_l),'pilot_testdat'];
 
@@ -109,6 +109,3 @@ output_da_test = channels_r(numTrSamples+1:end,:,:,:);
 %% Save data
 save(['Gan_Data/Gan_',num2str(snr),'_dB_',num2str(params.num_paths),'_path_',filename],...
     'input_da','output_da','input_da_test','output_da_test','-v7.3');
-
-
-

@@ -19,8 +19,9 @@ lr_gen = 2e-4
 lr_dis = 2e-5
 beta_1 = 0.5
 l2_weight = 100.0
+SNR = 10
 
-f_gen = "Models/Gen_%.5f_%.5f_%.2f_%.2f" % (lr_gen, lr_dis, beta_1, l2_weight)
+f_gen = "Models/Gen_%.5f_%.5f_%.2f_%.2f_%ddB" % (lr_gen, lr_dis, beta_1, l2_weight, SNR)
 # f_dis = "Models/Dis_%.5f_%.5f_%.2f_%.2f" % (lr_gen, lr_dis, beta_1, l2_weight)
 
 ## Load trained model
