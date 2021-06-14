@@ -186,7 +186,7 @@ for beta_1 in beta_1_list:
                                  verticalalignment='bottom',
                                  rotation=90)
 
-                plt.xlabel('Epoch, %s' % (path[:35]))
+                plt.xlabel('Epoch, %s' % (path[35:]))
                 plt.ylabel('NMSE(dB)')
                 plt.title("[lr_gen : %.6f][lr_dis : %.6f][beta1 : %.3f][l2_weight : %.6f]"
                           % (lr_gen, lr_dis, beta_1, l2_weight))

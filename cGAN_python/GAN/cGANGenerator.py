@@ -119,7 +119,7 @@ class Generator(tf.keras.Model):
         decoder_layer_4 = DecoderLayer(filters=64*4, kernel_size=4)
         self.decoder_layers = [decoder_layer_1, decoder_layer_2, decoder_layer_3, decoder_layer_4]
 
-        initializer = tf.random_normal_initializer(mean=0., stddev=0.02)
+        initializer = tf.random_normal_initializer(mean=0.0, stddev=0.02)
         self.last = layers.Conv2DTranspose(filters=2,
                                            kernel_size=4,
                                            strides=2,

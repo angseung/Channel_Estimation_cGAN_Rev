@@ -6,7 +6,7 @@ clc
 bs_ant= 64; % M= 64 BS Antennas
 users = 32; % K= 32 Users
 pilot_l = 8; % Pilots length is 8
-snr  = 10; % SNR = 10 dB
+snr  = 0; % SNR = 10 dB
 
 filename = ['Indoor2p5_',num2str(bs_ant),'ant_',num2str(users),'users_',num2str(pilot_l),'pilot_r4'];
 

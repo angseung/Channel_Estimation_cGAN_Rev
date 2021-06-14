@@ -54,4 +54,3 @@ for snr in test_snr_list:
               % (snr, paths, nmse_dB, realim.shape[0]))
 
         view_channel_dist(TestData)
-

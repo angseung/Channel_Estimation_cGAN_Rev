@@ -6,9 +6,9 @@ clc
 bs_ant= 64; % M= 64 BS Antennas
 users = 32; % K= 32 Users
 pilot_l = 8; % Pilots length is 8
-snr  = 10; % SNR = 10 dB
+snr  = 0; % SNR = 10 dB
 
-filename = ['Indoor2p5_',num2str(bs_ant),'ant_',num2str(users),'users_',num2str(pilot_l),'pilot_testdat'];
+filename = ['Indoor2p5_',num2str(bs_ant),'ant_',num2str(users),'users_',num2str(pilot_l),'pilot_testdat_rev'];
 
 %% Generate channel dataset H
 
@@ -21,7 +21,7 @@ params.active_BS=32;          % Includes the numbers of the active BSs (values f
 
 % Active users
 params.active_user_first=1;       % The first row of the considered receivers section (check the scenario description for the receiver row map)
-params.active_user_last=11;        % The last row of the considered receivers section (check the scenario description for the receiver row map)
+params.active_user_last=16;        % The last row of the considered receivers section (check the scenario description for the receiver row map)
 
 % Number of BS Antenna 
 params.num_ant_x=1;                  % Number of the UPA antenna array on the x-axis 
@@ -30,10 +30,10 @@ params.num_ant_z=1;                  % Number of the UPA antenna array on the z-
                                      % Note: The axes of the antennas match the axes of the ray-tracing scenario
                               
 % Antenna spacing
-params.ant_spacing=.5;               % ratio of the wavelnegth; for half wavelength enter .5        
+params.ant_spacing=.5;               % ratio of the wavelnegth; for half wavelength enter .5
 
 % System bandwidth
-params.bandwidth=0.01;                % The bandiwdth in GHz 
+params.bandwidth=0.01;                % The bandiwdth in GHz
 
 % OFDM parameters
 params.num_OFDM=users;                % Number of OFDM subcarriers
@@ -41,7 +41,7 @@ params.OFDM_sampling_factor=1;   % The constructed channels will be calculated o
 params.OFDM_limit=params.num_OFDM;                % Only the first params.OFDM_limit subcarriers will be considered when constructing the channels
 
 % Number of paths
-params.num_paths=25;                  % Maximum number of paths to be considered (a value between 1 and 25), e.g., choose 1 if you are only interested in the strongest path
+params.num_paths=3;                  % Maximum number of paths to be considered (a value between 1 and 25), e.g., choose 1 if you are only interested in the strongest path
 
 params.saveDataset=0;
 
@@ -49,7 +49,7 @@ params.saveDataset=0;
 [DeepMIMO_dataset,params]=DeepMIMO_generator(params); % Get H (i.e.,DeepMIMO_dataset )
 
 
-%% Generate Pilots 
+%% Generate Pilots
 % pilot = uniformPilotsGen(pilot_l);
 % pilot = pilot{1,1};
 % pilot_user = repmat(pilot,[1 users])';
@@ -107,5 +107,5 @@ output_da_test = channels_r(numTrSamples+1:end,:,:,:);
 % title('Visualization of H')
 
 %% Save data
-save(['Gan_Data/Gan_',num2str(snr),'_dB_',num2str(params.num_paths),'_path_',filename],...
+save(['Gan_Data/Gan_',num2str(snr),'_dB_',num2str(params.num_paths),'_path_',filename], ...
     'input_da','output_da','input_da_test','output_da_test','-v7.3');
