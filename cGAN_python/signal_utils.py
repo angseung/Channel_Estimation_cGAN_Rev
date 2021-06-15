@@ -10,7 +10,7 @@ def rayleigh_channel(channel_shape = None, distance_rate = None, sig_power = Non
 
     (multipath, c) = channel_shape
 
-    if (c is not 1):
+    if (c != 1):
         row = c
 
     else:
@@ -46,7 +46,8 @@ def rayleigh_channel(channel_shape = None, distance_rate = None, sig_power = Non
     return (ch_coef, rx_power)
 
 
-def rayleigh_channel_v2(channel_shape = None, distance_rate = None, sig_power = None, mode = None, profile = None):
+def rayleigh_channel_v2(channel_shape = None, distance_rate = None, sig_power = None,
+                        mode = None, profile = None):
     ## Initialize params using args
     if (profile is None):
         profile = 0
@@ -60,23 +61,23 @@ def rayleigh_channel_v2(channel_shape = None, distance_rate = None, sig_power = 
     if (distance_rate is None):
         distance_rate = 1
 
-    if (type(channel_shape) is int):
+    if (type(channel_shape) == int):
         channel_shape = [channel_shape, 1]
 
-    elif (type(channel_shape) is not list):
+    elif (type(channel_shape) != list):
         raise TypeError("'channel_shape' should be int or list type value!")
 
     ## Check multipath shape
     (multipath, c) = channel_shape
 
-    if (c is not 1):
+    if (c != 1):
         row = c
 
     else:
         row = 1
 
     ## Set profile value
-    if (profile is 0):
+    if (profile == 0):
         ## Use defualt channel profile
         ch_profile = np.exp(-1 * np.array(range(1, multipath + 1)) / 5)
 
@@ -92,7 +93,7 @@ def rayleigh_channel_v2(channel_shape = None, distance_rate = None, sig_power = 
     rnd = (np.random.randn(row, multipath) + 1j * np.random.randn(row, multipath)) * np.sqrt(0.5)
 
     ## Apply Racian model
-    if (mode is 2):
+    if (mode == 2):
         # LOS power rate
         K = np.zeros((row, multipath))
         K[:, 0] = 10 ** (15 / 10)
@@ -127,10 +128,10 @@ def awgn_noise(hx = [], snr = 1):
 
 
 def base_mod(data = [], mod_scheme = 2):
-    if (mod_scheme is 1):
+    if (mod_scheme == 1):
         mod_data = 2 * data - 1
 
-    elif (mod_scheme is 2):
+    elif (mod_scheme == 2):
         (mp_row, mp_col) = data.shape
 
         if (np.mod(mp_col, 2) != 0):
@@ -144,7 +145,7 @@ def base_mod(data = [], mod_scheme = 2):
 
         mod_data = 0.7071 * (odd_data + even_data)
 
-    elif (mod_scheme is 4):
+    elif (mod_scheme == 4):
         (mp_row, mp_col) = data.shape
 
         while (np.mod(mp_col, 4) != 0):
@@ -168,19 +169,19 @@ def base_mod(data = [], mod_scheme = 2):
 
 
 def base_demod(mod_data = [], mod_scheme = 2):
-    if (type(mod_data) is list):
+    if (type(mod_data) == list):
         mod_data = np.array(mod_data)
 
     RE = np.real(mod_data)
     IM = np.imag(mod_data)
 
-    if (mod_scheme is 1):
+    if (mod_scheme == 1):
         demod_data = 1 * (mod_data > 0)
 
-    elif (mod_scheme is 2):
+    elif (mod_scheme == 2):
         (mp_row, mp_col) = mod_data.shape
 
-        odd_data = 1 *(IM > 0)
+        odd_data = 1 * (IM > 0)
         even_data = 1 * (RE > 0)
 
         temp = np.vstack((odd_data, even_data))
@@ -204,7 +205,7 @@ def base_demod(mod_data = [], mod_scheme = 2):
 
 def conv(x = [], h = []):
     try:
-        if ((x.ndim is not 1) or (h.ndim is not 1)):
+        if ((x.ndim != 1) or (h.ndim != 1)):
             x = x.flatten()
             h = h.flatten()
     except:

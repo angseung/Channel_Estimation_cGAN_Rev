@@ -53,4 +53,4 @@ for snr in test_snr_list:
         print("[%d SNR, %d PATH]... Estimation Performance : [%2.4fdB] with [%d] test samples..."
               % (snr, paths, nmse_dB, realim.shape[0]))
 
-        view_channel_dist(TestData)
+        view_channel_dist(TestData, IMAGE_SAVE_OPT=True)

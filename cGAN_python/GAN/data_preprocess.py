@@ -79,7 +79,7 @@ def load_image_test_y(path):
 
     return (real_image, input_image)
 
-def view_channel_dist(path, TRAIN_VIEW_OPT = False):
+def view_channel_dist(path, TRAIN_VIEW_OPT = False, IMAGE_SAVE_OPT = False):
 
     if (TRAIN_VIEW_OPT):
         (channel, _) = load_image_train_y(path)
@@ -103,5 +103,8 @@ def view_channel_dist(path, TRAIN_VIEW_OPT = False):
 
     if (platform != 'linux'):
         plt.show()
+
+    if (IMAGE_SAVE_OPT):
+        fig_hist.savefig("hist_%s.png" % path[35 : -4])
 
     return None
