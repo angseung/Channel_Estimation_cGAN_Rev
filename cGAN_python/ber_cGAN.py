@@ -18,7 +18,7 @@ mod_data = base_mod(bit_data,
 
 targetIm = targetIm[:, :, :, 0] + 1j * targetIm[:, :, :, 1]
 s = np.dot(targetIm[0, :, :], mod_data)
-(y, _) = awgn_noise(s, 10)
+(y, _) = awgn_noise(s, 100)
 
 generator = tf.keras.models.load_model("Models/Gen_0.00020_0.00002_0.50_100.00_10dB")
 generator.trainable = False
@@ -34,4 +34,5 @@ recovered_data = base_demod(recovered_y,
                             mod_scheme=mod_scheme)
 
 error = np.logical_not(bit_data == recovered_data)
-ber = np.mean(error, axis=-1)
+ber = np.mean(error,
+              axis=None)
