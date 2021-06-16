@@ -91,6 +91,8 @@ def view_channel_dist(path, TRAIN_VIEW_OPT = False, IMAGE_SAVE_OPT = False):
 
     fig_hist = plt.figure(figsize=(10, 10))
     plt.subplot(211)
+    mean_dat = np.mean(channel_r, axis=None)
+    std_dat = np.std(channel_i, axis=None)
     plt.hist(channel_r, bins=1000)
     plt.grid(True)
     plt.title("Real Part")
@@ -99,7 +101,8 @@ def view_channel_dist(path, TRAIN_VIEW_OPT = False, IMAGE_SAVE_OPT = False):
     plt.hist(channel_i, bins=1000)
     plt.grid(True)
     plt.title("Imaginary Part")
-    plt.suptitle(path[35:])
+    plt.suptitle("%s, [mean : %.6f] [std : %.6f]"
+                 % (path[35:], mean_dat, std_dat))
 
     if (platform != 'linux'):
         plt.show()
