@@ -2,10 +2,10 @@ import numpy as np
 from scipy.signal import convolve
 
 def rayleigh_channel(channel_shape = None, distance_rate = None, sig_power = None, profile = None):
-    if (type(channel_shape) is int):
+    if (type(channel_shape) == int):
         channel_shape = [channel_shape, 1]
 
-    elif (type(channel_shape) is not list):
+    elif (type(channel_shape) != list):
         raise TypeError("'channel_shape' should be int or list type value!")
 
     (multipath, c) = channel_shape

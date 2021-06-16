@@ -94,7 +94,7 @@ def train(epochs, l2_weight=100):
     for epoch in range(epochs):
         print("-----\nEPOCH:", epoch)
         # train
-        for (bi, (target, input_image)) in enumerate(load_image_train(path)):
+        for (bi, (target, input_image)) in enumerate(load_image_train(path, batch_size=2)):
             elapsed_time = datetime.datetime.now() - start_time
             (gen_loss, disc_loss) = train_step(input_image,
                                                target,
