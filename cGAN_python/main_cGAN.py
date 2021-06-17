@@ -130,7 +130,7 @@ def train(epochs, l2_weight=100):
 is_not_linux = (platform != 'linux')
 
 # data path
-path = "../Data_Generation_matlab/Gan_Data/Comb_3_12_25_rev.mat"
+path = "../Data_Generation_matlab/Gan_Data/Comb_3_12_25_rev3.mat"
 
 # Set hyper params...
 # beta_1_list = [0.5, 0.6, 0.7, 0.8, 0.9]
@@ -144,9 +144,9 @@ lr_gen_list = [2e-4]
 lr_dis_list = [2e-5]
 
 # batch = 1 produces good results on U-NET
-BATCH_SIZE = 1
+BATCH_SIZE = 4
 snr = 10
-epochs = 17 # The best performance
+epochs = 25 # The best performance
 NMSE_SAVE_OPT = True
 MODEL_SAVE_OPT = True
 
@@ -198,7 +198,7 @@ for beta_1 in beta_1_list:
                 timestr = time.strftime("%Y%m%d_%H%M%S")
                 fig_nmse.savefig("fig_temp/nmse_score_%s_2epoch" % (timestr))
 
-                fname = "nmse/nmse_dB_%.5f_%.5f_%.2f_%.2f" % (lr_gen, lr_dis, beta_1, l2_weight)
+                fname = "nmse/nmse_dB_%.5f_%.5f_%.2f_%.2f_ext" % (lr_gen, lr_dis, beta_1, l2_weight)
 
                 if (NMSE_SAVE_OPT):
                     nm_np = np.array(nm)
@@ -210,7 +210,7 @@ for beta_1 in beta_1_list:
                                   (l2_weight == 100.0))
 
                 if (MODEL_SAVE_OPT and MODEL_SAVE_COND):
-                    generator.save("Models/Gen_%.5f_%.5f_%.2f_%.2f_%ddB"
+                    generator.save("Models/Gen_%.5f_%.5f_%.2f_%.2f_%ddB_ext"
                                    % (lr_gen, lr_dis, beta_1, l2_weight, snr))
                     # discriminator.save("Models/Dis_%.5f_%.5f_%.2f_%.2f"
                     #                    % (lr_gen, lr_dis, beta_1, l2_weight))

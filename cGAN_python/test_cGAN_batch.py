@@ -21,7 +21,7 @@ beta_1 = 0.5
 l2_weight = 100.0
 SNR = 10
 
-batch_list = [1, 2, 4, 10]
+batch_list = [2, 4, 10]
 test_paths_list = [3, 12, 25]
 test_snr_list = [0, 10]
 
@@ -30,7 +30,8 @@ for batch in batch_list:
         for paths in test_paths_list:
 
             ## Load trained model
-            f_gen = "Models/Gen_%.5f_%.5f_%.2f_%.2f_%ddB_%d" % (lr_gen, lr_dis, beta_1, l2_weight, SNR, batch)
+            # f_gen = "Models/Gen_%.5f_%.5f_%.2f_%.2f_%ddB_%d" % (lr_gen, lr_dis, beta_1, l2_weight, SNR, batch)
+            f_gen = "Models/Gen_ori_%d" % (batch)
             # f_dis = "Models/Dis_%.5f_%.5f_%.2f_%.2f" % (lr_gen, lr_dis, beta_1, l2_weight)
             generator = tf.keras.models.load_model(f_gen)
             generator.trainable = False

@@ -1,9 +1,9 @@
 import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import tensorflow as tf
 import numpy as np
 from GAN.data_preprocess import load_image_test_y, view_channel_dist
-
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+from matplotlib import pyplot as plt
 
 # GPU Setting
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
@@ -21,7 +21,7 @@ beta_1 = 0.5
 l2_weight = 100.0
 SNR = 10
 
-f_gen = "Models/Gen_%.5f_%.5f_%.2f_%.2f_%ddB" % (lr_gen, lr_dis, beta_1, l2_weight, SNR)
+f_gen = "Models/Gen_%.5f_%.5f_%.2f_%.2f_%ddB_2" % (lr_gen, lr_dis, beta_1, l2_weight, SNR)
 # f_dis = "Models/Dis_%.5f_%.5f_%.2f_%.2f" % (lr_gen, lr_dis, beta_1, l2_weight)
 
 ## Load trained model
@@ -30,13 +30,14 @@ generator.trainable = False
 # discriminator = tf.keras.models.load_model(f_dis)
 
 test_paths_list = [3, 12, 25]
-test_snr_list = [0, 10]
+test_snr_list = [-10, -5, 0, 5, 10, 15, 20, 25, 30, 35, 40]
+nmse_df = np.zeros((len(test_paths_list), len(test_snr_list)))
 
-for snr in test_snr_list:
-    for paths in test_paths_list:
+for i, snr in enumerate(test_snr_list):
+    for j, paths in enumerate(test_paths_list):
 
         ## Load test data
-        TestData = ("../Data_Generation_matlab/Gan_Data/Gan_%d_dB_%d_path_Indoor2p5_64ant_32users_8pilot_testdat.mat"
+        TestData = ("../Data_Generation_matlab/Gan_Val_Data/Gan_%d_dB_%d_path_Indoor2p5_64ant_32users_8pilot_r6.mat"
                     % (snr, paths))
         (realim, inpuim) = load_image_test_y(TestData)
 
@@ -49,8 +50,18 @@ for snr in test_snr_list:
         error_ = np.sum((realim - prediction) ** 2, axis=None)
         real_ = np.sum(realim ** 2, axis=None)
         nmse_dB = 10 * np.log10(error_ / real_)
+        nmse_df[j, i] = nmse_dB
 
         print("[%d SNR, %d PATH]... Estimation Performance : [%2.4fdB] with [%d] test samples..."
               % (snr, paths, nmse_dB, realim.shape[0]))
 
-        view_channel_dist(TestData, IMAGE_SAVE_OPT=True)
+        # view_channel_dist(TestData, IMAGE_SAVE_OPT=True)
+
+nmse = nmse_df.mean(axis=0)
+
+fig = plt.figure()
+plt.plot(range(-10, 41, 5), nmse)
+plt.xlabel("SNR (dB)")
+plt.ylabel("NMSE (dB)")
+plt.title("BATCH SIZE = 2")
+plt.show()
