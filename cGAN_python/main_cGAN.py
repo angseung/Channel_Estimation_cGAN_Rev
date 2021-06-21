@@ -144,7 +144,7 @@ lr_gen_list = [2e-4]
 lr_dis_list = [2e-5]
 
 # batch = 1 produces good results on U-NET
-BATCH_SIZE = 4
+BATCH_SIZE = 2
 snr = 10
 epochs = 25 # The best performance
 NMSE_SAVE_OPT = True
@@ -198,7 +198,7 @@ for beta_1 in beta_1_list:
                 timestr = time.strftime("%Y%m%d_%H%M%S")
                 fig_nmse.savefig("fig_temp/nmse_score_%s_2epoch" % (timestr))
 
-                fname = "nmse/nmse_dB_%.5f_%.5f_%.2f_%.2f_ext" % (lr_gen, lr_dis, beta_1, l2_weight)
+                fname = "nmse/nmse_dB_%.5f_%.5f_%.2f_%.2f_ext_2" % (lr_gen, lr_dis, beta_1, l2_weight)
 
                 if (NMSE_SAVE_OPT):
                     nm_np = np.array(nm)
