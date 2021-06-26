@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from GAN.cGANGenerator import Generator
 from GAN.cGANDiscriminator import Discriminator
 from GAN.cGANLoss import discriminator_loss, generator_loss
-from GAN.data_preprocess import load_image_train, load_image_test_y
+from GAN.data_preprocess import load_image_train, load_image_test_y, load_image_test
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
@@ -94,7 +94,7 @@ def train(epochs, l2_weight=100):
     for epoch in range(epochs):
         print("-----\nEPOCH:", epoch)
         # train
-        for (bi, (target, input_image)) in enumerate(load_image_train(path, batch_size=2)):
+        for (bi, (target, input_image)) in enumerate(load_image_train(path, batch_size=batch)):
             elapsed_time = datetime.datetime.now() - start_time
             (gen_loss, disc_loss) = train_step(input_image,
                                                target,
@@ -105,7 +105,7 @@ def train(epochs, l2_weight=100):
                   ", Discriminator loss:", disc_loss.numpy(),
                   ', time:',  elapsed_time)
         ep.append(epoch + 1)
-        
+
         (realim, inpuim) = load_image_test_y(path)
         prediction = generator(inpuim)
 
@@ -144,11 +144,13 @@ lr_gen_list = [2e-4]
 lr_dis_list = [2e-5]
 
 # batch = 1 produces good results on U-NET
-BATCH_SIZE = 2
+BATCH_SIZE = [2, 4, 10]
 snr = 10
 epochs = 25 # The best performance
 NMSE_SAVE_OPT = True
 MODEL_SAVE_OPT = True
+
+bs_index = 0
 
 for beta_1 in beta_1_list:
     for l2_weight in l2_weight_list:
@@ -158,6 +160,8 @@ for beta_1 in beta_1_list:
                 # model
                 generator = Generator()
                 discriminator = Discriminator()
+
+                batch = BATCH_SIZE[bs_index]
 
                 # optimizer
                 # generator_optimizer = tf.compat.v1.train.AdamOptimizer(2e-4, beta1=0.5) ##
@@ -196,9 +200,9 @@ for beta_1 in beta_1_list:
                     plt.show()
 
                 timestr = time.strftime("%Y%m%d_%H%M%S")
-                fig_nmse.savefig("fig_temp/nmse_score_%s_2epoch" % (timestr))
+                fig_nmse.savefig("fig_temp/nmse_score_%s_%02dBS" % (timestr, batch))
 
-                fname = "nmse/nmse_dB_%.5f_%.5f_%.2f_%.2f_ext_2" % (lr_gen, lr_dis, beta_1, l2_weight)
+                fname = "nmse/nmse_dB_%.5f_%.5f_%.2f_%.2f_ext_%02d" % (lr_gen, lr_dis, beta_1, l2_weight, batch)
 
                 if (NMSE_SAVE_OPT):
                     nm_np = np.array(nm)
@@ -210,7 +214,9 @@ for beta_1 in beta_1_list:
                                   (l2_weight == 100.0))
 
                 if (MODEL_SAVE_OPT and MODEL_SAVE_COND):
-                    generator.save("Models/Gen_%.5f_%.5f_%.2f_%.2f_%ddB_ext"
-                                   % (lr_gen, lr_dis, beta_1, l2_weight, snr))
+                    generator.save("Models/Gen_%.5f_%.5f_%.2f_%.2f_%ddB_ext_%02d"
+                                   % (lr_gen, lr_dis, beta_1, l2_weight, snr, batch))
                     # discriminator.save("Models/Dis_%.5f_%.5f_%.2f_%.2f"
                     #                    % (lr_gen, lr_dis, beta_1, l2_weight))
+
+                bs_index = bs_index + 1

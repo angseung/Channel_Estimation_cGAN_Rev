@@ -10,7 +10,7 @@ nmse_bat4 = np.load("nmse_paper/nmse_10b.npy")
 ep = range(1, nmse_ori.shape[0] + 1)
 
 fig = plt.figure()
-plt.plot(ep, nmse_ori, "b^-", label="Original cGAN")
+plt.plot(ep, nmse_ori, "b^-", label="Previous cGAN in [11]")
 plt.plot(ep, nmse_bat1, "k>-",  label="proposed GAN, BATCHSIZE=2")
 plt.plot(ep, nmse_bat2, "r<-",  label="proposed GAN, BATCHSIZE=4")
 plt.plot(ep, nmse_bat4, "yv-",  label="proposed GAN, BATCHSIZE=10")

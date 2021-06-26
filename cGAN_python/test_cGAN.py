@@ -59,7 +59,7 @@ for i, snr in enumerate(test_snr_list):
         # view_channel_dist(TestData, IMAGE_SAVE_OPT=True)
 
 nmse = nmse_df.mean(axis=0)
-np.save("NMSE_2_EXT", nmse_df)
+# np.save("NMSE_2_EXT", nmse_df)
 
 fig = plt.figure()
 plt.plot(range(-10, 41, 5), nmse_df[0, :], 'rx--', label="3 PATH")
@@ -72,4 +72,4 @@ plt.title("BATCH SIZE = 2")
 plt.legend(loc='best')
 plt.grid(True)
 plt.show()
-fig.savefig("Ext_2_nmse.png")
+# fig.savefig("Ext_2_nmse.png")

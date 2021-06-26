@@ -8,7 +8,7 @@ users = 32; % K= 32 Users
 pilot_l = 8; % Pilots length is 8
 % snr  = 10; % SNR = 0 dB
 
-filename = ['Indoor2p5_',num2str(bs_ant),'ant_',num2str(users),'users_',num2str(pilot_l),'pilot_val2'];
+filename = ['Indoor2p5_',num2str(bs_ant),'ant_',num2str(users),'users_',num2str(pilot_l),'pilot_val3'];
 
 %% Generate channel dataset H
 
