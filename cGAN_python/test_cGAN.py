@@ -22,7 +22,7 @@ l2_weight = 100.0
 SNR = 10
 
 # f_gen = "Models/Gen_%.5f_%.5f_%.2f_%.2f_%ddB_ext2" % (lr_gen, lr_dis, beta_1, l2_weight, SNR)
-f_gen = "Models/Gen_ori_2"
+f_gen = "Models/Gen_0.00020_0.00002_0.50_100.00_10dB_2"
 # f_dis = "Models/Dis_%.5f_%.5f_%.2f_%.2f" % (lr_gen, lr_dis, beta_1, l2_weight)
 
 ## Load trained model
@@ -38,7 +38,7 @@ for i, snr in enumerate(test_snr_list):
     for j, paths in enumerate(test_paths_list):
 
         ## Load test data
-        TestData = ("../Data_Generation_matlab/Gan_Val_Data/Gan_%d_dB_%d_path_Indoor2p5_64ant_32users_8pilot_val2.mat"
+        TestData = ("../Data_Generation_matlab/Gan_Val_Data/Gan_%d_dB_%d_path_Indoor2p5_64ant_32users_8pilot_r20.mat"
                     % (snr, paths))
         (realim, inpuim) = load_image_test_y(TestData)
 
@@ -59,7 +59,7 @@ for i, snr in enumerate(test_snr_list):
         # view_channel_dist(TestData, IMAGE_SAVE_OPT=True)
 
 nmse = nmse_df.mean(axis=0)
-# np.save("NMSE_2_EXT", nmse_df)
+np.save("NMSE_2_NOEXT", nmse_df)
 
 fig = plt.figure()
 plt.plot(range(-10, 41, 5), nmse_df[0, :], 'rx--', label="3 PATH")

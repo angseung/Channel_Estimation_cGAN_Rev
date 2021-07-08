@@ -6,9 +6,9 @@
 bs_ant= 64; % M= 64 BS Antennas
 users = 32; % K= 32 Users
 pilot_l = 8; % Pilots length is 8
-% snr  = 10; % SNR = 10 dB
+snr  = snr; % SNR = 10 dB
 
-filename = ['Indoor2p5_',num2str(bs_ant),'ant_',num2str(users),'users_',num2str(pilot_l),'pilot_fval'];
+filename = ['Indoor2p5_',num2str(bs_ant),'ant_',num2str(users),'users_',num2str(pilot_l),'pilot_0707'];
 
 %% Generate channel dataset H
 
@@ -87,7 +87,7 @@ channels_r = channels_r(shuff,:,:,:);
 
 %% Split data for training
 numOfSamples = length(DeepMIMO_dataset{1}.user);
-trRatio = 0.7;
+trRatio = 0.0;
 numTrSamples = floor( trRatio*numOfSamples);
 numValSamples = numOfSamples - numTrSamples;
 

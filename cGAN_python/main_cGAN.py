@@ -130,7 +130,7 @@ def train(epochs, l2_weight=100):
 is_not_linux = (platform != 'linux')
 
 # data path
-path = "../Data_Generation_matlab/Gan_Data/Comb_3_12_25_rev3.mat"
+path = "../Data_Generation_matlab/Gan_Data/Comb_3_12_25.mat"
 
 # Set hyper params...
 # beta_1_list = [0.5, 0.6, 0.7, 0.8, 0.9]
@@ -144,9 +144,9 @@ lr_gen_list = [2e-4]
 lr_dis_list = [2e-5]
 
 # batch = 1 produces good results on U-NET
-BATCH_SIZE = [2, 4, 10]
+BATCH_SIZE = [2]
 snr = 10
-epochs = 25 # The best performance
+epochs = 17 # The best performance
 NMSE_SAVE_OPT = True
 MODEL_SAVE_OPT = True
 
