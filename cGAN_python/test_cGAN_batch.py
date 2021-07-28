@@ -3,7 +3,7 @@ import tensorflow as tf
 import numpy as np
 from GAN.data_preprocess import load_image_test_y, view_channel_dist
 
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 
 # GPU Setting
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
@@ -38,13 +38,17 @@ for batch in batch_list:
             # discriminator = tf.keras.models.load_model(f_dis)
 
             ## Load test data
-            TestData = ("../Data_Generation_matlab/Gan_Data/Gan_%d_dB_%d_path_Indoor2p5_64ant_32users_8pilot_testdat.mat"
-                        % (snr, paths))
+            TestData = (
+                "../Data_Generation_matlab/Gan_Data/Gan_%d_dB_%d_path_Indoor2p5_64ant_32users_8pilot_testdat.mat"
+                % (snr, paths)
+            )
             (realim, inpuim) = load_image_test_y(TestData)
 
             ## Estimate channel with generator model
-            print("[%d SNR, %d PATH, %d BATCH]... Estimating Channel Coefficients with [%d] test samples."
-                  % (snr, paths, batch, realim.shape[0]))
+            print(
+                "[%d SNR, %d PATH, %d BATCH]... Estimating Channel Coefficients with [%d] test samples."
+                % (snr, paths, batch, realim.shape[0])
+            )
             prediction = generator(inpuim)
 
             ## Calculate test NMSE score...
@@ -52,7 +56,9 @@ for batch in batch_list:
             real_ = np.sum(realim ** 2, axis=None)
             nmse_dB = 10 * np.log10(error_ / real_)
 
-            print("[%d SNR, %d PATH, %d BATCH]... Estimation Performance : [%2.4fdB] with [%d] test samples..."
-                  % (snr, paths, batch, nmse_dB, realim.shape[0]))
+            print(
+                "[%d SNR, %d PATH, %d BATCH]... Estimation Performance : [%2.4fdB] with [%d] test samples..."
+                % (snr, paths, batch, nmse_dB, realim.shape[0])
+            )
 
             view_channel_dist(TestData, IMAGE_SAVE_OPT=True)

@@ -19,10 +19,10 @@ plt.plot(range(-10, 41, 5), ext_10, "gs--", label="proposed, BS=10", markersize=
 plt.plot(range(-10, 41, 5), ext_2, "ro--", label="proposed, BS=2", markersize=8)
 plt.plot(range(-10, 41, 5), ori_nmse, "kx--", label="reference", markersize=10)
 
-plt.xlabel("SNR (dB)", fontsize='large')
-plt.ylabel("NMSE (dB)", fontsize='large')
+plt.xlabel("SNR (dB)", fontsize="large")
+plt.ylabel("NMSE (dB)", fontsize="large")
 plt.ylim([-17, -4])
 plt.grid(True)
-plt.legend(loc='best', fontsize='x-large')
+plt.legend(loc="best", fontsize="x-large")
 plt.title("")
 plt.show()

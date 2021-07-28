@@ -10,7 +10,7 @@ from GAN.cGANDiscriminator import Discriminator
 from GAN.cGANLoss import discriminator_loss, generator_loss
 from GAN.data_preprocess import load_image_train, load_image_test_y, load_image_test
 
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 
 # GPU Setting
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
@@ -42,16 +42,18 @@ def generated_image(model, test_input, tar, t=0):
     """Dispaly  the results of Generator"""
     prediction = model(test_input)
     # plt.figure(figsize=(15, 15))
-    display_list = [np.squeeze(test_input[:, :, :, 0]),
-                    np.squeeze(tar[:, :, :, 0]),
-                    np.squeeze(prediction[:, :, :, 0])]
+    display_list = [
+        np.squeeze(test_input[:, :, :, 0]),
+        np.squeeze(tar[:, :, :, 0]),
+        np.squeeze(prediction[:, :, :, 0]),
+    ]
 
-    title = ['Input Y', 'Target H', 'Prediction H']
-    
+    title = ["Input Y", "Target H", "Prediction H"]
+
     for i in range(3):
-        plt.subplot(1, 3, i+1)
+        plt.subplot(1, 3, i + 1)
         plt.title(title[i])
-        plt.imshow(display_list[i]) 
+        plt.imshow(display_list[i])
         plt.axis("off")
 
     plt.savefig(os.path.join("generated_img", "img_" + str(t) + ".png"))
@@ -59,29 +61,33 @@ def generated_image(model, test_input, tar, t=0):
 
 def train_step(input_image, target, l2_weight=100):
     with tf.GradientTape() as gen_tape, tf.GradientTape() as disc_tape:
-        gen_output = generator(input_image)                      # input -> generated_target
+        gen_output = generator(input_image)  # input -> generated_target
         disc_real_output = discriminator(target)  # [input, target] -> disc output
-        disc_generated_output = discriminator(gen_output)  # [input, generated_target] -> disc output
+        disc_generated_output = discriminator(
+            gen_output
+        )  # [input, generated_target] -> disc output
 
         # calculate loss
-        gen_loss = generator_loss(disc_generated_output,
-                                  gen_output,
-                                  target,
-                                  l2_weight=l2_weight)   # gen loss
-        disc_loss = discriminator_loss(disc_real_output,
-                                       disc_generated_output)  # disc loss
+        gen_loss = generator_loss(
+            disc_generated_output, gen_output, target, l2_weight=l2_weight
+        )  # gen loss
+        disc_loss = discriminator_loss(
+            disc_real_output, disc_generated_output
+        )  # disc loss
 
     # gradient
-    generator_gradient = gen_tape.gradient(gen_loss,
-                                           generator.trainable_variables)
-    discriminator_gradient = disc_tape.gradient(disc_loss,
-                                                discriminator.trainable_variables)
+    generator_gradient = gen_tape.gradient(gen_loss, generator.trainable_variables)
+    discriminator_gradient = disc_tape.gradient(
+        disc_loss, discriminator.trainable_variables
+    )
 
     # apply gradient
-    generator_optimizer.apply_gradients(zip(generator_gradient,
-                                            generator.trainable_variables))
-    discriminator_optimizer.apply_gradients(zip(discriminator_gradient,
-                                                discriminator.trainable_variables))
+    generator_optimizer.apply_gradients(
+        zip(generator_gradient, generator.trainable_variables)
+    )
+    discriminator_optimizer.apply_gradients(
+        zip(discriminator_gradient, discriminator.trainable_variables)
+    )
 
     return (gen_loss, disc_loss)
 
@@ -94,16 +100,24 @@ def train(epochs, l2_weight=100):
     for epoch in range(epochs):
         print("-----\nEPOCH:", epoch)
         # train
-        for (bi, (target, input_image)) in enumerate(load_image_train(path, batch_size=batch)):
+        for (bi, (target, input_image)) in enumerate(
+            load_image_train(path, batch_size=batch)
+        ):
             elapsed_time = datetime.datetime.now() - start_time
-            (gen_loss, disc_loss) = train_step(input_image,
-                                               target,
-                                               l2_weight=l2_weight)
+            (gen_loss, disc_loss) = train_step(input_image, target, l2_weight=l2_weight)
 
-            print("B/E:", bi, '/' , epoch,
-                  ", Generator loss:", gen_loss.numpy(),
-                  ", Discriminator loss:", disc_loss.numpy(),
-                  ', time:',  elapsed_time)
+            print(
+                "B/E:",
+                bi,
+                "/",
+                epoch,
+                ", Generator loss:",
+                gen_loss.numpy(),
+                ", Discriminator loss:",
+                disc_loss.numpy(),
+                ", time:",
+                elapsed_time,
+            )
         ep.append(epoch + 1)
 
         (realim, inpuim) = load_image_test_y(path)
@@ -114,20 +128,20 @@ def train(epochs, l2_weight=100):
         real_ = np.sum(realim ** 2, axis=None)
         nmse_dB = 10 * np.log10(error_ / real_)
         nm.append(nmse_dB)
-        
-        plt.figure()
-        plt.plot(ep,nm,'^-r')
-        plt.grid(True)
-        plt.xlabel('Epoch')
-        plt.ylabel('NMSE')
 
-        if (is_not_linux):
+        plt.figure()
+        plt.plot(ep, nm, "^-r")
+        plt.grid(True)
+        plt.xlabel("Epoch")
+        plt.ylabel("NMSE")
+
+        if is_not_linux:
             plt.show()
-    
+
     return (nm, ep)
 
 
-is_not_linux = (platform != 'linux')
+is_not_linux = platform != "linux"
 
 # data path
 path = "../Data_Generation_matlab/Gan_Data/Comb_3_12_25.mat"
@@ -146,7 +160,7 @@ lr_dis_list = [2e-5]
 # batch = 1 produces good results on U-NET
 BATCH_SIZE = [2]
 snr = 10
-epochs = 17 # The best performance
+epochs = 17  # The best performance
 NMSE_SAVE_OPT = True
 MODEL_SAVE_OPT = True
 
@@ -167,55 +181,70 @@ for beta_1 in beta_1_list:
                 # generator_optimizer = tf.compat.v1.train.AdamOptimizer(2e-4, beta1=0.5) ##
                 # discriminator_optimizer = tf.compat.v1.train.RMSPropOptimizer(2e-5) ##
                 # discriminator_optimizer = tf.compat.v1.train.AdamOptimizer(2e-4, beta1=0.5) # Which is unused...
-                discriminator_optimizer = tf.keras.optimizers.Adam(learning_rate=lr_dis,
-                                                                   beta_1=beta_1)
-                generator_optimizer = tf.keras.optimizers.Adam(learning_rate=lr_gen,
-                                                               beta_1=beta_1)
+                discriminator_optimizer = tf.keras.optimizers.Adam(
+                    learning_rate=lr_dis, beta_1=beta_1
+                )
+                generator_optimizer = tf.keras.optimizers.Adam(
+                    learning_rate=lr_gen, beta_1=beta_1
+                )
 
                 # train
-                (nm, ep) = train(epochs=epochs,
-                                 l2_weight=l2_weight)
+                (nm, ep) = train(epochs=epochs, l2_weight=l2_weight)
 
                 fig_nmse = plt.figure(figsize=(10, 10))
-                plt.plot(ep, nm, '^-r')
+                plt.plot(ep, nm, "^-r")
 
                 for (x, y) in zip(ep, nm):
-                    if (x > 9):
-                        plt.text(x=x,
-                                 y=y + 0.5,
-                                 s=("%.3f" % y),
-                                 fontsize=9,
-                                 color='black',
-                                 horizontalalignment='center',
-                                 verticalalignment='bottom',
-                                 rotation=90)
+                    if x > 9:
+                        plt.text(
+                            x=x,
+                            y=y + 0.5,
+                            s=("%.3f" % y),
+                            fontsize=9,
+                            color="black",
+                            horizontalalignment="center",
+                            verticalalignment="bottom",
+                            rotation=90,
+                        )
 
-                plt.xlabel('Epoch, %s' % (path[35:]))
-                plt.ylabel('NMSE(dB)')
-                plt.title("[lr_gen : %.6f][lr_dis : %.6f][beta1 : %.3f][l2_weight : %.6f]"
-                          % (lr_gen, lr_dis, beta_1, l2_weight))
+                plt.xlabel("Epoch, %s" % (path[35:]))
+                plt.ylabel("NMSE(dB)")
+                plt.title(
+                    "[lr_gen : %.6f][lr_dis : %.6f][beta1 : %.3f][l2_weight : %.6f]"
+                    % (lr_gen, lr_dis, beta_1, l2_weight)
+                )
                 plt.grid(True)
 
-                if (is_not_linux):
+                if is_not_linux:
                     plt.show()
 
                 timestr = time.strftime("%Y%m%d_%H%M%S")
                 fig_nmse.savefig("fig_temp/nmse_score_%s_%02dBS" % (timestr, batch))
 
-                fname = "nmse/nmse_dB_%.5f_%.5f_%.2f_%.2f_ext_%02d" % (lr_gen, lr_dis, beta_1, l2_weight, batch)
+                fname = "nmse/nmse_dB_%.5f_%.5f_%.2f_%.2f_ext_%02d" % (
+                    lr_gen,
+                    lr_dis,
+                    beta_1,
+                    l2_weight,
+                    batch,
+                )
 
-                if (NMSE_SAVE_OPT):
+                if NMSE_SAVE_OPT:
                     nm_np = np.array(nm)
                     np.save(fname, nm_np)
 
-                MODEL_SAVE_COND = ((lr_gen == 2e-4) and
-                                  (lr_dis == 2e-5) and
-                                  (beta_1 == 0.5) and
-                                  (l2_weight == 100.0))
+                MODEL_SAVE_COND = (
+                    (lr_gen == 2e-4)
+                    and (lr_dis == 2e-5)
+                    and (beta_1 == 0.5)
+                    and (l2_weight == 100.0)
+                )
 
-                if (MODEL_SAVE_OPT and MODEL_SAVE_COND):
-                    generator.save("Models/Gen_%.5f_%.5f_%.2f_%.2f_%ddB_ext_%02d"
-                                   % (lr_gen, lr_dis, beta_1, l2_weight, snr, batch))
+                if MODEL_SAVE_OPT and MODEL_SAVE_COND:
+                    generator.save(
+                        "Models/Gen_%.5f_%.5f_%.2f_%.2f_%ddB_ext_%02d"
+                        % (lr_gen, lr_dis, beta_1, l2_weight, snr, batch)
+                    )
                     # discriminator.save("Models/Dis_%.5f_%.5f_%.2f_%.2f"
                     #                    % (lr_gen, lr_dis, beta_1, l2_weight))
 

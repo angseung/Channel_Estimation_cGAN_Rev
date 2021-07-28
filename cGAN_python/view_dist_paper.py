@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import scipy.stats as stats
 from GAN.data_preprocess import load_image_test_y
 
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 
 path_ori = "../Data_Generation_matlab/Gan_Data/Gan_10_dB_3_path_Indoor2p5_64ant_32users_8pilot_r1.mat"
 path_12 = "../Data_Generation_matlab/Gan_Data/Gan_10_dB_12_path_Indoor2p5_64ant_32users_8pilot_r2.mat"
@@ -51,27 +51,43 @@ r_comb_imag_std = r_comb[:, :, :, 1].std(axis=None)
 # dist_25 = np.random.normal(loc=r_25_real_mean, scale=r_25_real_std, size=num_ori)
 # dist_comb = np.random.normal(loc=r_comb_real_mean, scale=r_comb_real_std, size=num_comb)
 
-dist_3 = np.linspace(r_ori_real_mean - 3*r_ori_real_std,
-                     r_ori_real_mean + 3*r_ori_real_std, 100)
+dist_3 = np.linspace(
+    r_ori_real_mean - 3 * r_ori_real_std, r_ori_real_mean + 3 * r_ori_real_std, 100
+)
 
-dist_12 = np.linspace(r_12_real_mean - 3*r_12_real_std,
-                      r_12_real_mean + 3*r_12_real_std, 100)
+dist_12 = np.linspace(
+    r_12_real_mean - 3 * r_12_real_std, r_12_real_mean + 3 * r_12_real_std, 100
+)
 
-dist_25 = np.linspace(r_25_real_mean - 3*r_comb_real_std,
-                      r_25_real_mean + 3*r_comb_real_std, 100)
+dist_25 = np.linspace(
+    r_25_real_mean - 3 * r_comb_real_std, r_25_real_mean + 3 * r_comb_real_std, 100
+)
 
-dist_comb = np.linspace(r_comb_real_mean - 3*r_comb_real_std,
-                        r_comb_real_mean + 3*r_comb_real_std, 100)
+dist_comb = np.linspace(
+    r_comb_real_mean - 3 * r_comb_real_std, r_comb_real_mean + 3 * r_comb_real_std, 100
+)
 
 fig = plt.figure()
 plt.subplot(212)
 # plt.hist(dist_3, bins=4000)
 # plt.hist(dist_12, bins=4000)
 # plt.hist(dist_25, bins=4000)
-plt.plot(dist_3, stats.norm.pdf(dist_3, r_ori_real_mean, r_ori_real_std), "-", label="3 PATH")
-plt.plot(dist_12, stats.norm.pdf(dist_12, r_12_real_mean, r_12_real_std), "-", label="12 PATH")
-plt.plot(dist_25, stats.norm.pdf(dist_25, r_25_real_mean, r_25_real_mean), "-", label="25 PATH")
-plt.axis('off')
+plt.plot(
+    dist_3, stats.norm.pdf(dist_3, r_ori_real_mean, r_ori_real_std), "-", label="3 PATH"
+)
+plt.plot(
+    dist_12,
+    stats.norm.pdf(dist_12, r_12_real_mean, r_12_real_std),
+    "-",
+    label="12 PATH",
+)
+plt.plot(
+    dist_25,
+    stats.norm.pdf(dist_25, r_25_real_mean, r_25_real_mean),
+    "-",
+    label="25 PATH",
+)
+plt.axis("off")
 plt.ylim([0.0, 2.0])
 plt.xlim([-2.0, 2.0])
 # plt.legend(loc='best')
@@ -79,8 +95,13 @@ plt.xlim([-2.0, 2.0])
 
 plt.subplot(211)
 # fig = plt.figure()
-plt.plot(dist_comb, stats.norm.pdf(dist_comb, r_comb_real_mean, r_comb_real_std), "k-",  label="comb")
-plt.axis('off')
+plt.plot(
+    dist_comb,
+    stats.norm.pdf(dist_comb, r_comb_real_mean, r_comb_real_std),
+    "k-",
+    label="comb",
+)
+plt.axis("off")
 plt.ylim([0.0, 2.0])
 plt.xlim([-2.0, 2.0])
 # plt.legend(loc='best')

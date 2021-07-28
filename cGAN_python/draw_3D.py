@@ -30,7 +30,7 @@ for (i, path) in enumerate(y):
     else:
         plt.plot(x, nmse[i, :], "--", label="nmse with path %02d" % path)
 
-plt.legend(loc='best', ncol=3)
+plt.legend(loc="best", ncol=3)
 plt.grid(True)
 
 plt.show()

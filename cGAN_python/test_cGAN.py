@@ -1,5 +1,6 @@
 import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 import tensorflow as tf
 import numpy as np
 from GAN.data_preprocess import load_image_test_y, view_channel_dist
@@ -38,13 +39,17 @@ for i, snr in enumerate(test_snr_list):
     for j, paths in enumerate(test_paths_list):
 
         ## Load test data
-        TestData = ("../Data_Generation_matlab/Gan_Val_Data/Gan_%d_dB_%d_path_Indoor2p5_64ant_32users_8pilot_r20.mat"
-                    % (snr, paths))
+        TestData = (
+            "../Data_Generation_matlab/Gan_Val_Data/Gan_%d_dB_%d_path_Indoor2p5_64ant_32users_8pilot_r20.mat"
+            % (snr, paths)
+        )
         (realim, inpuim) = load_image_test_y(TestData)
 
         ## Estimate channel with generator model
-        print("[%d SNR, %d PATH]... Estimating Channel Coefficients with [%d] test samples."
-              % (snr, paths, realim.shape[0]))
+        print(
+            "[%d SNR, %d PATH]... Estimating Channel Coefficients with [%d] test samples."
+            % (snr, paths, realim.shape[0])
+        )
         prediction = generator(inpuim)
 
         ## Calculate test NMSE score...
@@ -53,8 +58,10 @@ for i, snr in enumerate(test_snr_list):
         nmse_dB = 10 * np.log10(error_ / real_)
         nmse_df[j, i] = nmse_dB
 
-        print("[%d SNR, %d PATH]... Estimation Performance : [%2.4fdB] with [%d] test samples..."
-              % (snr, paths, nmse_dB, realim.shape[0]))
+        print(
+            "[%d SNR, %d PATH]... Estimation Performance : [%2.4fdB] with [%d] test samples..."
+            % (snr, paths, nmse_dB, realim.shape[0])
+        )
 
         # view_channel_dist(TestData, IMAGE_SAVE_OPT=True)
 
@@ -62,14 +69,14 @@ nmse = nmse_df.mean(axis=0)
 np.save("NMSE_2_NOEXT", nmse_df)
 
 fig = plt.figure()
-plt.plot(range(-10, 41, 5), nmse_df[0, :], 'rx--', label="3 PATH")
-plt.plot(range(-10, 41, 5), nmse_df[1, :], 'bo--', label="12 PATH")
-plt.plot(range(-10, 41, 5), nmse_df[2, :], 'y^--', label="25 PATH")
-plt.plot(range(-10, 41, 5), nmse, 'kv-', label="averaged")
+plt.plot(range(-10, 41, 5), nmse_df[0, :], "rx--", label="3 PATH")
+plt.plot(range(-10, 41, 5), nmse_df[1, :], "bo--", label="12 PATH")
+plt.plot(range(-10, 41, 5), nmse_df[2, :], "y^--", label="25 PATH")
+plt.plot(range(-10, 41, 5), nmse, "kv-", label="averaged")
 plt.xlabel("SNR (dB)")
 plt.ylabel("NMSE (dB)")
 plt.title("BATCH SIZE = 2")
-plt.legend(loc='best')
+plt.legend(loc="best")
 plt.grid(True)
 plt.show()
 # fig.savefig("Ext_2_nmse.png")
